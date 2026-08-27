@@ -24,6 +24,13 @@
 enable_builtin_templates = true
 builtin_ids             = ["kitty", "gtk3", "gtk4"]
 
+# Noctalia's own wallpaper picker never runs ml4w's wallpaper.sh/Matugen
+# pipeline, so the still-running ml4w Quickshell panels (Sidebar, Power,
+# AIUsageWindow -- see ~/projects/hyprlnd's shell.qml) would otherwise keep
+# showing stale colors. This re-runs a scoped Matugen pass for just those.
+[hooks]
+wallpaper_changed = "~/.config/hypr/scripts/noctalia-theme-quickshell.sh $NOCTALIA_WALLPAPER_PATH"
+
 [bar]
 order = ["default"]
 
