@@ -1,0 +1,33 @@
+# Personal, self-owned AI-usage bar widget for Noctalia. Same principle as the
+# Waybar module it mirrors: no third-party CLI, no credential-reading binary.
+# The poller just runs this repo's own waybar-format.sh (backed by collect.sh
+# and providers/*.sh under ~/.config/waybar/scripts/ai-usage/) and a click
+# reopens the existing Quickshell AIUsageWindow panel over `qs ipc`, instead of
+# re-implementing that dropdown here.
+
+id = "hyprlnd/ai-usage"
+name = "AI Usage"
+version = "1.0.0"
+plugin_api = 9
+author = "hyprlnd"
+license = "MIT"
+icon = "brain"
+description = "Claude Code session/weekly usage %, backed by this dotfiles repo's own ai-usage scripts."
+tags = ["bar", "ai"]
+
+[[setting]]
+key = "refresh_minutes"
+type = "int"
+label_key = "settings.refresh_minutes.label"
+description_key = "settings.refresh_minutes.description"
+default = 5
+min = 1
+max = 60
+
+[[service]]
+id = "poller"
+entry = "service.luau"
+
+[[widget]]
+id = "bar"
+entry = "bar.luau"

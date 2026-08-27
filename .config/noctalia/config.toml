@@ -1,0 +1,80 @@
+# Hand-written Noctalia config -- mirrored into ~/projects/hyprlnd for version
+# control, same as everything else in this dotfiles setup. Bar layout mirrors
+# the ml4w Waybar "starter" theme's module list
+# (~/.config/waybar/themes/starter/config) so the two profiles are a fair
+# side-by-side comparison rather than Noctalia's own defaults.
+#
+# GUI changes made from Noctalia's own Settings save to
+# ~/.local/state/noctalia/settings.toml and win over this file -- see
+# https://docs.noctalia.dev/noctalia/configuration/. If a widget below doesn't
+# look right, the fastest fix is its own gear icon (middle-click it) rather
+# than editing here.
+#
+# Deliberately left out for now (no clean 1:1 Noctalia equivalent yet):
+# custom/updates, the disk/language pieces of Waybar's "group/hardware", and
+# custom/ml4w-welcome (ML4W-app-specific, nothing to port it to).
+
+# App theming is opt-in and off by default -- without this, wallpaper changes
+# only recolor Noctalia's own UI, not kitty/GTK. Each app's own apply.sh
+# safely appends its own include (kitty: `include themes/noctalia.conf` at
+# the end of kitty.conf, after the existing ml4w/Matugen include; GTK: an
+# `@import` appended to gtk.css) rather than overwriting anything, so this is
+# additive even while ml4w's Matugen pipeline is still around.
+[theme.templates]
+enable_builtin_templates = true
+builtin_ids             = ["kitty", "gtk3", "gtk4"]
+
+[bar]
+order = ["default"]
+
+[bar.default]
+position = "top"
+enabled  = true
+start    = ["launcher", "settings", "active_window"]
+center   = ["workspaces"]
+end      = [
+    "updates",
+    "ai_usage",
+    "cpu",
+    "memory",
+    "volume",
+    "bluetooth",
+    "battery",
+    "network",
+    "clipboard",
+    "caffeine",
+    "nightlight",
+    "tray",
+    "shell_profile",
+    "session",
+    "clock",
+]
+
+# Community plugin (github.com/noctalia-dev/community-plugins, yuuto/arch-updater)
+# -- pacman + AUR + Flatpak, background upgrades with polkit, rollback, history.
+# Replaces ml4w's custom/updates + installupdates.sh for this profile.
+[widget.updates]
+type = "yuuto/arch-updater:widget"
+
+# Our own plugin (~/.local/share/noctalia/plugins/ai-usage/) -- see its
+# plugin.toml for what it does and why.
+[widget.ai_usage]
+type = "hyprlnd/ai-usage:bar"
+
+# Same script/keybind as Waybar's "custom/shell-profile" button and
+# $mainMod+SHIFT+N -- flips between the ml4w and noctalia profiles.
+[widget.shell_profile]
+type    = "custom_button"
+glyph   = "arrows-right-left"
+tooltip = "Switch shell profile (ml4w / noctalia)"
+
+  [widget.shell_profile.actions]
+  left = "exec ~/.config/hypr/scripts/switch-shell-profile.sh"
+
+[widget.cpu]
+type = "sysmon"
+stat = "cpu_usage"
+
+[widget.memory]
+type = "sysmon"
+stat = "ram_used"
