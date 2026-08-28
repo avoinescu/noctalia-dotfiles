@@ -21,8 +21,10 @@
 # `@import` appended to gtk.css) rather than overwriting anything, so this is
 # additive even while ml4w's Matugen pipeline is still around.
 [theme.templates]
-enable_builtin_templates = true
-builtin_ids             = ["kitty", "gtk3", "gtk4"]
+enable_builtin_templates   = true
+builtin_ids                = ["kitty", "gtk3", "gtk4"]
+enable_community_templates = true
+community_ids               = ["papirus-icons"]
 
 # Noctalia's own wallpaper picker never runs ml4w's wallpaper.sh/Matugen
 # pipeline, so the still-running ml4w Quickshell panels (Sidebar, Power,
@@ -30,6 +32,10 @@ builtin_ids             = ["kitty", "gtk3", "gtk4"]
 # showing stale colors. This re-runs a scoped Matugen pass for just those.
 [hooks]
 wallpaper_changed = "~/.config/hypr/scripts/noctalia-theme-quickshell.sh $NOCTALIA_WALLPAPER_PATH"
+# Mirrors the recolored-icon-theme choice (papirus-icons community template,
+# see noctalia-theme skill) from gsettings into gtk-3.0/4.0 settings.ini,
+# which is what this setup's gtk.sh / most GTK3 apps actually read.
+colors_changed     = "~/.config/hypr/scripts/noctalia-sync-icon-theme.sh"
 
 [bar]
 order = ["default"]
