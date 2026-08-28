@@ -139,13 +139,16 @@ writes into ml4w-shared config.
 ## Custom themes
 
 Eight hand-built palettes beyond Noctalia's own built-in/wallpaper-derived
-schemes, all documented as a reusable pattern in `hyprlnd`'s
-`noctalia-theme` skill. One is scheduled (Hellsing); the other seven are
-static one-shot toggles sharing `~/.config/hypr/scripts/custom-theme-lib.sh`
-(in `hyprlnd`) for apply/deactivate logic and cross-theme preemption -- a
-single `~/.cache/ml4w/active-static-theme` file tracks whichever one (if
-any) is on, so turning on any theme cleanly turns off whatever else was
-active, including Hellsing (restored -- tier and all -- if it was preempted).
+schemes. One is scheduled (Hellsing); the other seven are static one-shot
+toggles sharing `~/.config/hypr/scripts/custom-theme-lib.sh` (in `hyprlnd`)
+for apply/deactivate logic and cross-theme preemption -- a single
+`~/.cache/ml4w/active-static-theme` file tracks whichever one (if any) is
+on, so turning on any theme cleanly turns off whatever else was active,
+including Hellsing (restored -- tier and all -- if it was preempted).
+
+Want to add another one? [**CREATING-A-THEME.md**](CREATING-A-THEME.md) is
+a step-by-step walkthrough of the whole process (also documented as a
+reusable pattern in `hyprlnd`'s `noctalia-theme` skill).
 
 ### Hellsing -- scheduled, 4 tiers
 
@@ -233,6 +236,8 @@ reach into the ml4w-managed hypr config tree; see below.
 - `~/.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder}-theme.sh`
   -- the seven static theme toggles
 - `~/.config/hypr/scripts/noctalia-theme-picker.sh` -- the rofi theme picker
+- `~/.config/hypr/scripts/gen-theme-colors.py` -- the palette generator used
+  in [CREATING-A-THEME.md](CREATING-A-THEME.md)
 - `~/.config/hypr/scripts/noctalia-theme-quickshell.sh` and
   `noctalia-sync-icon-theme.sh` -- this repo's two hooks
 - `~/.config/matugen/config-quickshell.toml` -- the scoped Matugen config the

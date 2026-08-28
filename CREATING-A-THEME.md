@@ -1,0 +1,206 @@
+# Creating a custom theme
+
+A step-by-step walkthrough for adding a new theme like Joker, Illidan, or
+Warframe (see the [README](README.md#custom-themes) for the full list).
+This covers a **static** theme -- one palette, toggled on/off, no schedule.
+If you want something that evolves over time instead (like Hellsing's four
+time-of-day tiers), skip to [Scheduled themes instead of static](#scheduled-themes-instead-of-static)
+at the end.
+
+You can follow this yourself, or hand it to Claude as a spec ("build a
+theme for X using CREATING-A-THEME.md") -- either way the steps and file
+locations are the same.
+
+## 0. Pick an id
+
+Lowercase, no spaces, matches a Waybar/Hyprland variable-name-safe string
+(e.g. `illidan`, `bloodelves`, `warthunder`). This id is used as the
+filename/key everywhere below -- pick it before starting.
+
+## 1. Decide the color story
+
+Six hand-picked colors define the theme (everything else -- containers,
+outlines, surface tiers -- gets derived automatically):
+
+| Role | What it should be |
+|---|---|
+| `primary` / `on_primary` | The single color that says "this is the theme" at a glance, and a high-contrast color to put text/icons on top of it |
+| `secondary` / `on_secondary` | A supporting accent color |
+| `tertiary` / `on_tertiary` | A highlight color -- a special ability, a specific detail, something that stands out |
+| `error` / `on_error` | A red/warning color, distinct in hue from tertiary so error states don't blend in |
+| `background` / `on_background` | A near-black tinted toward the theme's mood, and a high-contrast foreground for text on top of it |
+
+Plus two terminal accent colors, `term_blue` and `term_cyan`, for kitty's
+ANSI blue/cyan slots (pick anything that fits -- these are minor).
+
+**Why hand-pick instead of generating everything from one seed color**:
+Matugen's own dark-mode contrast math keeps `primary` pale and washed out
+regardless of how intense the seed is -- it's tuned for readability, not
+drama. Hand-picking the six perceptually-important roles above and letting
+Matugen fill in everything else (which its contrast math *does* get right)
+is the established pattern here.
+
+## 2. Generate the three color files
+
+Write your six pairs (plus the two terminal colors) to a small JSON file:
+
+```json
+{
+  "primary": "#rrggbb", "on_primary": "#rrggbb",
+  "secondary": "#rrggbb", "on_secondary": "#rrggbb",
+  "tertiary": "#rrggbb", "on_tertiary": "#rrggbb",
+  "error": "#rrggbb", "on_error": "#rrggbb",
+  "background": "#rrggbb", "on_background": "#rrggbb",
+  "term_blue": "#rrggbb", "term_cyan": "#rrggbb"
+}
+```
+
+Then run:
+
+```sh
+python3 ~/.config/hypr/scripts/gen-theme-colors.py <id> your-colors.json
+```
+
+This writes all three files the rest of the system expects:
+
+- `~/.config/ml4w/colors/<id>.json` (Quickshell)
+- `~/.config/hypr/colors/<id>.conf` (Hyprland)
+- `~/projects/noctalia-dotfiles/.config/noctalia/palettes/<id>.json` (Noctalia)
+
+Requires `matugen` on `PATH` (already installed as part of this setup).
+
+## 3. Source wallpapers
+
+Directory: `~/Pictures/wallpaper/<id>/` (not tracked in git -- same as
+every other theme's wallpapers). 3-5 images is plenty; prefer 4K.
+
+Wallhaven's public API needs no auth:
+
+```sh
+curl -s "https://wallhaven.cc/api/v1/search?q=<search+term>&categories=100&purity=100&atleast=3840x2160&sorting=favorites&order=desc" \
+  | jq -r '.data[].path'
+```
+
+Download a few of the returned URLs into the theme's folder as `01.jpg`,
+`02.jpg`, etc. If a 4K-only search returns too few hits, drop
+`atleast=3840x2160` and accept 1920x1080+ instead rather than leaving the
+folder empty.
+
+## 4. Source a logo for fastfetch
+
+Path: `~/.config/fastfetch/assets/<id>-face.png`. A transparent-background
+character portrait or logo mark works best. pngegg.com is a good source:
+search, open a result's detail page (`/en/png-XXXXX`), and the actual CDN
+image URL is embedded there (something like `https://e7.pngegg.com/...png`).
+
+**Required step, learned the hard way**: convert whatever you download to
+true 8-bit RGBA before wiring it in --
+
+```sh
+magick your-download.png -define png:color-type=6 ~/.config/fastfetch/assets/<id>-face.png
+```
+
+Fastfetch's kitty-image rendering silently breaks on 4-bit indexed PNGs
+(renders nothing, or a corrupted tiny patch) -- several sourced logos hit
+exactly this the first time. Verify with `file`:
+
+```sh
+file ~/.config/fastfetch/assets/<id>-face.png
+# should say "8-bit/color RGBA" or "8-bit colormap" -- NOT "4-bit colormap"
+```
+
+## 5. Write the toggle script
+
+Create `~/.config/hypr/scripts/<id>-theme.sh`:
+
+```bash
+#!/usr/bin/env bash
+# Static "<Theme Name>" theme -- <one-line color story>.
+set -uo pipefail
+source "$(dirname "${BASH_SOURCE[0]}")/custom-theme-lib.sh"
+
+ID="<id>"
+WALLPAPER_DIR="$HOME/Pictures/wallpaper/<id>"
+COLORS_JSON="$HOME/.config/ml4w/colors/<id>.json"
+COLORS_CONF="$HOME/.config/hypr/colors/<id>.conf"
+LOGO="$HOME/.config/fastfetch/assets/<id>-face.png"
+
+CURRENT="off"
+[ -f "$ACTIVE_STATIC" ] && [ "$(cat "$ACTIVE_STATIC")" = "$ID" ] && CURRENT="on"
+
+TARGET="${1:-}"
+if [ -z "$TARGET" ]; then
+    [ "$CURRENT" = "off" ] && TARGET="on" || TARGET="off"
+fi
+
+if [ "$TARGET" = "on" ]; then
+    apply_static_theme "$ID" "$WALLPAPER_DIR" "$COLORS_JSON" "$COLORS_CONF" "$LOGO"
+    notify-send -a "<App Name>" "<on-quote>" 2>/dev/null || true
+else
+    deactivate_static_theme "$ID"
+    notify-send -a "<App Name>" "<off-quote>" 2>/dev/null || true
+fi
+```
+
+`apply_static_theme`/`deactivate_static_theme` (from `custom-theme-lib.sh`)
+handle the wallpaper swap, the three-surface color sync, the fastfetch logo
+swap, and cleanly preempting/restoring Hellsing and whatever other static
+theme might be active -- you don't need to touch any of that.
+
+**On the quotes**: use real ones, verbatim, when the source material has
+them -- verify the exact wording with a web search rather than trusting
+memory, quotes drift. When it doesn't (no characters, or something too new
+to have quotable dialogue findable), write clearly-flavor text and say so
+in the script's own comment rather than presenting it as a real quote.
+
+```sh
+chmod +x ~/.config/hypr/scripts/<id>-theme.sh
+bash -n ~/.config/hypr/scripts/<id>-theme.sh   # syntax check
+```
+
+## 6. Register it in the picker
+
+Add one line to `~/.config/hypr/scripts/noctalia-theme-picker.sh`, in the
+`add "..."` list:
+
+```bash
+add "<Display Name>"    "$SCRIPTS_DIR/<id>-theme.sh on"
+```
+
+## 7. Test it
+
+```sh
+~/.config/hypr/scripts/<id>-theme.sh on
+# check: wallpaper changed, colors changed (bar/panels/borders), logo shows
+# in a fresh fastfetch run, notification fired
+cat ~/.cache/ml4w/active-static-theme   # should say <id>
+
+~/.config/hypr/scripts/<id>-theme.sh off
+# check: active-static-theme is gone, whatever was running before (Hellsing,
+# or nothing) comes back correctly
+```
+
+If you have another theme already on, also test switching directly between
+them (pick one from the picker, then immediately pick another) -- you
+should see only the new theme's on-notification, nothing from Hellsing in
+between.
+
+## 8. Document and commit
+
+- Add a row to the theme table in this repo's [README](README.md#static-themes----one-shot-no-schedule).
+- Copy the new/changed files from `~/.config/...` into their matching paths
+  under `~/projects/hyprlnd/` (everything under `.config/hypr/scripts/`,
+  `.config/ml4w/colors/`, `.config/hypr/colors/`, `.config/fastfetch/assets/`
+  lives in `hyprlnd`, not here).
+- Commit `hyprlnd` (the script, colors, logo) and `noctalia-dotfiles` (the
+  Noctalia palette JSON, the README update) separately.
+
+## Scheduled themes instead of static
+
+If the theme should evolve over time the way Hellsing does (multiple tiers
+keyed to time of day) rather than being a single on/off palette, the shape
+is different enough that it's not a variant of the steps above -- see
+`hellsing-lib.sh` (shared tier-application logic) and
+`hellsing-scheduler.sh` (the poller) in `hyprlnd` as the worked example, and
+the "Building an 'evolving' / scheduled theme" section of
+`hyprlnd`'s `.claude/skills/noctalia-theme/SKILL.md` for the checklist.
