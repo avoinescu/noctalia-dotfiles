@@ -138,9 +138,14 @@ writes into ml4w-shared config.
 
 ## Custom themes
 
-Two hand-built palettes beyond Noctalia's own built-in/wallpaper-derived
-schemes, both documented as a reusable pattern in `hyprlnd`'s
-`noctalia-theme` skill.
+Eight hand-built palettes beyond Noctalia's own built-in/wallpaper-derived
+schemes, all documented as a reusable pattern in `hyprlnd`'s
+`noctalia-theme` skill. One is scheduled (Hellsing); the other seven are
+static one-shot toggles sharing `~/.config/hypr/scripts/custom-theme-lib.sh`
+(in `hyprlnd`) for apply/deactivate logic and cross-theme preemption -- a
+single `~/.cache/ml4w/active-static-theme` file tracks whichever one (if
+any) is on, so turning on any theme cleanly turns off whatever else was
+active, including Hellsing (restored -- tier and all -- if it was preempted).
 
 ### Hellsing -- scheduled, 4 tiers
 
@@ -168,20 +173,25 @@ files, the wallpaper pool, the fastfetch logo swap -- lives in `hyprlnd`:
   alone means waiting up to 5 minutes to see anything change)
 - Toggle file: `~/.config/ml4w/settings/hellsing-theme` (`on`/`off`)
 
-### Joker -- static, no schedule
+### Static themes -- one-shot, no schedule
 
-Purple suit / toxic-green hair / blood-red smile on near-black. Deliberately
-*not* scheduled -- a time-of-day evolution doesn't make sense for this one,
-unlike Hellsing. One-shot apply/revert instead of a poller:
-`~/.config/hypr/scripts/joker-theme.sh` (in `hyprlnd`). Palette here:
-`palettes/joker.json`.
+Each is a single palette, deliberately not scheduled (a time-of-day
+evolution doesn't fit any of these the way it does Hellsing). One-shot
+apply/revert script per theme in `hyprlnd`
+(`~/.config/hypr/scripts/<id>-theme.sh`), palette here at
+`palettes/<id>.json`. Each on/off toggle also fires a themed notification;
+quotes are verbatim where the source material has real ones, flavor text
+(clearly not claimed as a quote) where it doesn't.
 
-Since Hellsing's poller and Joker's one-shot script both touch the same
-shared resources (fastfetch logo, ml4w `colors.json`, Hyprland
-`colors.conf`), each preempts the other's toggle *and* state file directly
-before applying, so neither can lose a race to the other within Hellsing's
-5-minute poll window. Turning one off restores whatever the other's toggle
-was before it was preempted, rather than guessing.
+| Theme | Feel | On-notification | Off-notification |
+|---|---|---|---|
+| `joker` | Purple suit / toxic-green / blood-red on near-black | "Why So Serious? Introduce a little anarchy." | "You wouldn't want to miss the ending." |
+| `illidan` | Fel-green energy, demon purple, on near-black | "You are not prepared!" | "The Betrayer stands down." (flavor) |
+| `arthas` | Frostmourne ice-blue, plague green, blood crimson, on near-black navy | "Frostmourne hungers." | "At long last... no king rules forever, my son." -- Terenas Menethil's spirit, as Arthas dies atop Icecrown Citadel |
+| `bloodelves` | Gold and crimson with an arcane-green undertone, on deep maroon-black | "Anu belore dela'na! (The sun guides us.)" -- real Thalassian NPC line | "Anar'alah! (By the Light!)" -- real Thalassian NPC line |
+| `proxima` | Sacred amber flame, ashen stone, electric-blue lightning accent, on near-black bone | "Harden. Endure. Become the shell." (flavor -- Mortal Shell II released days before this theme was built, no canonical Proxima dialogue was findable yet) | "The shell falls silent once more." (flavor) |
+| `warframe` | Tenno cyan, Orokin gold, void purple, on deep space black | "Tenno... wake up." -- the Lotus, game's intro line | "The Old War is over. But another war... is just beginning." -- the Lotus |
+| `warthunder` | Olive drab, gunmetal gray, tracer orange, on asphalt near-black | "A good pilot can fly anything that flies..." -- real in-game loading-screen hint (no characters to quote) | "Prepare for the next sortie." (flavor) |
 
 ## Theme picker
 
@@ -193,8 +203,8 @@ Noctalia's own wallpaper-derived generator, using whatever
 current tier" entry plus all four tiers individually as forced previews --
 a forced tier auto-corrects back within 5 minutes if it doesn't match the
 scheduler's current-hour tier, since Hellsing's poller doesn't know the
-difference between a preview and a real change), Joker, then Noctalia's 8
-builtin schemes (Nord, Catppuccin, Dracula, Gruvbox, Tokyo-Night, Eldritch,
+difference between a preview and a real change), then all seven static
+themes from the table above, then Noctalia's 8 builtin schemes (Nord, Catppuccin, Dracula, Gruvbox, Tokyo-Night, Eldritch,
 Kanagawa, Rosé Pine) and whatever's cached under
 `~/.local/state/noctalia/community-palettes/` (community schemes downloaded
 via Noctalia's own picker, e.g. Oxocarbon).
@@ -202,8 +212,8 @@ via Noctalia's own picker, e.g. Oxocarbon).
 **Scope note**: picking a builtin/community scheme or "Wallpaper (auto)"
 only changes Noctalia's own colors (bar, panels, and whatever app templates
 are enabled above). It does **not** recolor the still-running ml4w
-Quickshell panels or Hyprland's window borders the way Hellsing/Joker do --
-those two were hand-generated with all three surfaces in mind (see
+Quickshell panels or Hyprland's window borders the way the custom themes do --
+those were hand-generated with all three surfaces in mind (see
 [Custom themes](#custom-themes)); Noctalia has no CLI-exposed way to read
 back a builtin/community scheme's resolved hex values to feed into Matugen
 for the other two surfaces. `noctalia-theme-preempt.sh` (`hyprlnd`) turns
@@ -231,11 +241,15 @@ reach into the ml4w-managed hypr config tree; see below.
 - `~/.config/hypr/scripts/switch-shell-profile.sh` + the `Super+Shift+N`
   keybind + the Waybar button -- the profile switcher itself
 - `~/.config/hypr/scripts/hellsing-*.sh` -- the Hellsing scheduler/lib/toggle
-  and the ml4w-side (Quickshell/Hyprland) halves of both custom themes
-- `~/.config/hypr/scripts/joker-theme.sh`
+  and the ml4w-side (Quickshell/Hyprland) halves of every custom theme
+- `~/.config/hypr/scripts/custom-theme-lib.sh` -- shared apply/deactivate
+  logic and cross-theme preemption for every static theme
+- `~/.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder}-theme.sh`
+  -- the seven static theme toggles
 - `~/.config/hypr/scripts/noctalia-theme-picker.sh` and
-  `noctalia-theme-preempt.sh` -- the rofi theme picker and its Hellsing/Joker
-  cleanup helper
+  `noctalia-theme-preempt.sh` -- the rofi theme picker and its cleanup
+  helper (turns off whatever custom theme is active before a
+  builtin/community/wallpaper pick)
 - `~/.config/hypr/scripts/noctalia-theme-quickshell.sh` and
   `noctalia-sync-icon-theme.sh` -- this repo's two hooks
 - `~/.config/matugen/config-quickshell.toml` -- the scoped Matugen config the
