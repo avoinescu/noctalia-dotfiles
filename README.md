@@ -183,17 +183,46 @@ before applying, so neither can lose a race to the other within Hellsing's
 5-minute poll window. Turning one off restores whatever the other's toggle
 was before it was preempted, rather than guessing.
 
+## Theme picker
+
+A rofi menu (`noctalia-theme-picker.sh`, `hyprlnd`) instead of one keybind per
+theme -- that stopped scaling once builtin schemes and community palettes
+were in the mix too. Lists, in order: "Wallpaper (auto)" (reverts to
+Noctalia's own wallpaper-derived generator, using whatever
+`wallpaper_scheme` is already saved in `settings.toml`), Hellsing (an "Auto,
+current tier" entry plus all four tiers individually as forced previews --
+a forced tier auto-corrects back within 5 minutes if it doesn't match the
+scheduler's current-hour tier, since Hellsing's poller doesn't know the
+difference between a preview and a real change), Joker, then Noctalia's 8
+builtin schemes (Nord, Catppuccin, Dracula, Gruvbox, Tokyo-Night, Eldritch,
+Kanagawa, Rosé Pine) and whatever's cached under
+`~/.local/state/noctalia/community-palettes/` (community schemes downloaded
+via Noctalia's own picker, e.g. Oxocarbon).
+
+**Scope note**: picking a builtin/community scheme or "Wallpaper (auto)"
+only changes Noctalia's own colors (bar, panels, and whatever app templates
+are enabled above). It does **not** recolor the still-running ml4w
+Quickshell panels or Hyprland's window borders the way Hellsing/Joker do --
+those two were hand-generated with all three surfaces in mind (see
+[Custom themes](#custom-themes)); Noctalia has no CLI-exposed way to read
+back a builtin/community scheme's resolved hex values to feed into Matugen
+for the other two surfaces. `noctalia-theme-preempt.sh` (`hyprlnd`) turns
+off Hellsing/Joker cleanly first if either is active, so picking a builtin
+scheme doesn't leave a stale "on" toggle for the scheduler to fight with
+later.
+
 ## Keybinds
 
 | Keybind | Action |
 |---|---|
 | `Super+Shift+N` | Switch shell profile (`ml4w` ⇄ `noctalia`) |
-| `Super+Shift+J` | Toggle Joker theme |
+| `Super+Shift+P` | Open the Noctalia theme picker (rofi menu, noctalia profile only) |
 | `Super+Shift+C` | Toggle Noctalia's control center panel (noctalia profile only) |
-| `Super+Shift+V` | Toggle Hellsing theme (instant, doesn't wait for the poller) |
 
-All three scripts live in `hyprlnd` since they reach into the ml4w-managed
-hypr config tree; see below.
+The theme picker replaced the old dedicated `Super+Shift+J` (Joker) /
+`Super+Shift+V` (Hellsing) toggle keybinds -- both are still one click away
+as menu entries. All scripts behind these binds live in `hyprlnd` since they
+reach into the ml4w-managed hypr config tree; see below.
 
 ## Relationship to hyprlnd
 
@@ -204,6 +233,9 @@ hypr config tree; see below.
 - `~/.config/hypr/scripts/hellsing-*.sh` -- the Hellsing scheduler/lib/toggle
   and the ml4w-side (Quickshell/Hyprland) halves of both custom themes
 - `~/.config/hypr/scripts/joker-theme.sh`
+- `~/.config/hypr/scripts/noctalia-theme-picker.sh` and
+  `noctalia-theme-preempt.sh` -- the rofi theme picker and its Hellsing/Joker
+  cleanup helper
 - `~/.config/hypr/scripts/noctalia-theme-quickshell.sh` and
   `noctalia-sync-icon-theme.sh` -- this repo's two hooks
 - `~/.config/matugen/config-quickshell.toml` -- the scoped Matugen config the
