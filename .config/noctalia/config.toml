@@ -59,6 +59,7 @@ end      = [
     "nightlight",
     "tray",
     "shell_profile",
+    "control-center",
     "session",
     "clock",
 ]
