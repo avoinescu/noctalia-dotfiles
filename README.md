@@ -195,31 +195,17 @@ quotes are verbatim where the source material has real ones, flavor text
 
 ## Theme picker
 
-A rofi menu (`noctalia-theme-picker.sh`, `hyprlnd`) instead of one keybind per
-theme -- that stopped scaling once builtin schemes and community palettes
-were in the mix too. Lists, in order: "Wallpaper (auto)" (reverts to
-Noctalia's own wallpaper-derived generator, using whatever
-`wallpaper_scheme` is already saved in `settings.toml`), Hellsing (an "Auto,
-current tier" entry plus all four tiers individually as forced previews --
-a forced tier auto-corrects back within 5 minutes if it doesn't match the
-scheduler's current-hour tier, since Hellsing's poller doesn't know the
-difference between a preview and a real change), then all seven static
-themes from the table above, then Noctalia's 8 builtin schemes (Nord, Catppuccin, Dracula, Gruvbox, Tokyo-Night, Eldritch,
-Kanagawa, Rosé Pine) and whatever's cached under
-`~/.local/state/noctalia/community-palettes/` (community schemes downloaded
-via Noctalia's own picker, e.g. Oxocarbon).
-
-**Scope note**: picking a builtin/community scheme or "Wallpaper (auto)"
-only changes Noctalia's own colors (bar, panels, and whatever app templates
-are enabled above). It does **not** recolor the still-running ml4w
-Quickshell panels or Hyprland's window borders the way the custom themes do --
-those were hand-generated with all three surfaces in mind (see
-[Custom themes](#custom-themes)); Noctalia has no CLI-exposed way to read
-back a builtin/community scheme's resolved hex values to feed into Matugen
-for the other two surfaces. `noctalia-theme-preempt.sh` (`hyprlnd`) turns
-off Hellsing/Joker cleanly first if either is active, so picking a builtin
-scheme doesn't leave a stale "on" toggle for the scheduler to fight with
-later.
+A rofi menu (`noctalia-theme-picker.sh`, `hyprlnd`) instead of one keybind
+per theme -- that stopped scaling once seven static themes plus Hellsing
+were in the mix. Deliberately scoped to *only* our own custom themes, not a
+general Noctalia scheme picker: no "Wallpaper (auto)", no builtin schemes,
+no community palettes -- those are still reachable via Noctalia's own
+Settings if wanted. Lists, in order: Hellsing (an "Auto, current tier" entry
+plus all four tiers individually as forced previews -- a forced tier
+auto-corrects back within 5 minutes if it doesn't match the scheduler's
+current-hour tier, since Hellsing's poller doesn't know the difference
+between a preview and a real change), then all seven static themes from the
+table above.
 
 ## Keybinds
 
@@ -246,10 +232,7 @@ reach into the ml4w-managed hypr config tree; see below.
   logic and cross-theme preemption for every static theme
 - `~/.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder}-theme.sh`
   -- the seven static theme toggles
-- `~/.config/hypr/scripts/noctalia-theme-picker.sh` and
-  `noctalia-theme-preempt.sh` -- the rofi theme picker and its cleanup
-  helper (turns off whatever custom theme is active before a
-  builtin/community/wallpaper pick)
+- `~/.config/hypr/scripts/noctalia-theme-picker.sh` -- the rofi theme picker
 - `~/.config/hypr/scripts/noctalia-theme-quickshell.sh` and
   `noctalia-sync-icon-theme.sh` -- this repo's two hooks
 - `~/.config/matugen/config-quickshell.toml` -- the scoped Matugen config the
