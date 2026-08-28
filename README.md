@@ -41,7 +41,7 @@ defaults:
 |---|---|
 | start | launcher, settings, active window |
 | center | workspaces |
-| end | updates, AI usage, cpu, memory, volume, bluetooth, battery, network, clipboard, caffeine, nightlight, tray, shell profile switcher, session, clock |
+| end | updates, AI usage, cpu, memory, volume, bluetooth, battery, network, clipboard, caffeine, nightlight, tray, shell profile switcher, control center, session, clock |
 
 Non-obvious widgets:
 
@@ -189,6 +189,7 @@ was before it was preempted, rather than guessing.
 |---|---|
 | `Super+Shift+N` | Switch shell profile (`ml4w` ⇄ `noctalia`) |
 | `Super+Shift+J` | Toggle Joker theme |
+| `Super+Shift+C` | Toggle Noctalia's control center panel (noctalia profile only) |
 | `Super+Shift+V` | Toggle Hellsing theme (instant, doesn't wait for the poller) |
 
 All three scripts live in `hyprlnd` since they reach into the ml4w-managed
