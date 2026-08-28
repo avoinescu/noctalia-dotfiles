@@ -153,6 +153,22 @@ memory, quotes drift. When it doesn't (no characters, or something too new
 to have quotable dialogue findable), write clearly-flavor text and say so
 in the script's own comment rather than presenting it as a real quote.
 
+**Optional: play a sound alongside the on-notification.** Source a short
+clip (myinstants.com is a reliable source for game voice lines -- its pages
+embed a direct mp3 URL you can `curl` straight out of the page source; a
+soundboard search often turns up multiple takes of the same line, so
+listen to more than one candidate before picking), save it to
+`~/.config/hypr/sounds/<id>.mp3`, then add one line after the on-branch's
+`notify-send`:
+
+```bash
+    play_theme_sound "$HOME/.config/hypr/sounds/<id>.mp3"
+```
+
+`play_theme_sound` (in `custom-theme-lib.sh`) backgrounds `paplay` and
+no-ops if the file doesn't exist, so this is safe to add even before the
+sound file itself is in place.
+
 ```sh
 chmod +x ~/.config/hypr/scripts/<id>-theme.sh
 bash -n ~/.config/hypr/scripts/<id>-theme.sh   # syntax check
@@ -190,8 +206,8 @@ between.
 - Add a row to the theme table in this repo's [README](README.md#static-themes----one-shot-no-schedule).
 - Copy the new/changed files from `~/.config/...` into their matching paths
   under `~/projects/hyprlnd/` (everything under `.config/hypr/scripts/`,
-  `.config/ml4w/colors/`, `.config/hypr/colors/`, `.config/fastfetch/assets/`
-  lives in `hyprlnd`, not here).
+  `.config/ml4w/colors/`, `.config/hypr/colors/`, `.config/fastfetch/assets/`,
+  `.config/hypr/sounds/` lives in `hyprlnd`, not here).
 - Commit `hyprlnd` (the script, colors, logo) and `noctalia-dotfiles` (the
   Noctalia palette JSON, the README update) separately.
 
