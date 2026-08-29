@@ -6,8 +6,10 @@ symlink farm at all -- Noctalia's own config directories were never touched by
 ml4w's install.sh, so they get their own repo and their own installer instead
 of being force-fit into that one.
 
-Both `ml4w` and `noctalia` shell profiles currently coexist on this machine so
-they can be compared side by side; see [Relationship to hyprlnd](#relationship-to-hyprlnd).
+Noctalia is now the sole daily-driver shell on this machine. The old `ml4w`
+profile (Waybar/swaync/rofi/hypridle) is kept installed but dormant -- a
+one-command fallback (`switch-shell-profile.sh ml4w`) rather than something
+actively maintained; see [Relationship to hyprlnd](#relationship-to-hyprlnd).
 
 ## What's here
 
@@ -115,26 +117,30 @@ Both scripts live in `hyprlnd`, not here (see below), because they reach
 outside anything Noctalia owns:
 
 - **`wallpaper_changed`** -- Noctalia's own wallpaper picker never runs
-  ml4w's `wallpaper.sh`/Matugen pipeline, so the still-running ml4w
-  Quickshell panels (Sidebar, Power, `AIUsageWindow`) would otherwise keep
-  showing stale colors. Re-runs a scoped Matugen pass for just those, then
-  tells Quickshell to reload.
+  ml4w's full Matugen pipeline (retired along with the rest of ml4w's own
+  bar/panels), so the two Quickshell panels with no Noctalia equivalent that
+  are still kept around (`PowerWindow`, `AIUsageWindow` -- see
+  `hyprlnd`'s `shell.qml`) would otherwise keep showing stale colors.
+  Re-runs a scoped Matugen pass for just those, then tells Quickshell to
+  reload.
 - **`colors_changed`** -- fires on *every* palette resolve, not just a real
   wallpaper change (e.g. `color-scheme-set`). Mirrors the `papirus-icons`
   icon-theme choice from gsettings into `settings.ini` (see the gotcha
   above).
 
-**Second-order gotcha, hit and fixed once already**: writing to a
-shared config file like `settings.ini` from a hook can wake up something
-*else* that watches that file with no idea a "noctalia profile" concept
-exists. On this machine, `~/.config/ml4w/listeners/gtk-theme-switcher.sh` is
-an inotify watcher (predates Noctalia entirely) that reacts to *any* write to
-`settings.ini` by unconditionally relaunching Waybar -- which is exactly how
-Noctalia re-resolving its own palette on startup once caused Waybar to
-reappear seconds after switching to the `noctalia` profile. Fixed in that
-listener (in `hyprlnd`) by having it check the shell-profile setting and
-no-op under `noctalia`. Worth remembering before wiring any *new* hook that
-writes into ml4w-shared config.
+**Second-order gotcha, hit once already**: writing to a shared config file
+like `settings.ini` from a hook can wake up something *else* that watches
+that file with no idea a "noctalia profile" concept exists. On this machine,
+`~/.config/ml4w/listeners/gtk-theme-switcher.sh` was an inotify watcher
+(predating Noctalia) that reacted to *any* write to `settings.ini` by
+unconditionally relaunching Waybar -- which is exactly how Noctalia
+re-resolving its own palette on startup once caused Waybar to reappear
+seconds after switching to the `noctalia` profile. First fixed with a
+profile-check no-op guard in that listener; since ml4w's own Waybar/swaync
+were fully retired, the listener itself is no longer started at all
+(`~/.config/ml4w/listeners.sh`, in `hyprlnd`), which is a stronger version of
+the same fix. Worth remembering before wiring any *new* hook that writes
+into ml4w-shared config.
 
 ## Custom themes
 
@@ -232,7 +238,8 @@ reach into the ml4w-managed hypr config tree; see below.
 `hyprlnd` owns everything that isn't purely Noctalia's own file:
 
 - `~/.config/hypr/scripts/switch-shell-profile.sh` + the `Super+Shift+N`
-  keybind + the Waybar button -- the profile switcher itself
+  keybind -- the profile switcher, now mostly a fallback path back to the
+  dormant `ml4w` profile (see below)
 - `~/.config/hypr/scripts/hellsing-*.sh` -- the Hellsing scheduler/lib/toggle
   and the ml4w-side (Quickshell/Hyprland) halves of every custom theme
 - `~/.config/hypr/scripts/custom-theme-lib.sh` -- shared apply/deactivate
@@ -248,6 +255,37 @@ reach into the ml4w-managed hypr config tree; see below.
   Quickshell hook uses
 - `.claude/skills/noctalia-theme/SKILL.md` -- the reusable "how to build a
   Noctalia theme on this setup" writeup
+
+### ml4w decoupling (Noctalia is now the sole daily-driver shell)
+
+ml4w's own bar/panels/theming were retired once the ml4w-vs-noctalia
+comparison ran its course, rather than kept as a live, actively-maintained
+parallel system. What's left of ml4w in `hyprlnd`, post-decoupling:
+
+- **Kept, extracted from the old ml4w mega-shell**: `~/.config/quickshell/
+  {PowerApp,AIUsageApp,CustomTheme}/` + a trimmed `shell.qml` -- the two
+  panels with no Noctalia equivalent (a power/session menu, and the
+  custom-built AI-usage dropdown Noctalia's own `hyprlnd/ai-usage:bar`
+  widget reopens via `qs ipc call ai-usage toggle`), still themed by the
+  same `colors.json`/`theme-manager` IPC reload every static theme already
+  used. The standalone Quickshell `overview/` (Alt-Tab-style workspace
+  switcher, `Ctrl+Tab`) was already independent of the old mega-shell and
+  needed no change.
+- **Kept, dormant fallback**: `switch-shell-profile.sh`, Waybar (all
+  themes), swaync, rofi, hypridle -- installed and switchable
+  (`switch-shell-profile.sh ml4w`) but not autostarted or actively
+  maintained. Its Matugen-driven re-theming (Waybar/rofi/swaync/gtk3/gtk4
+  color templates) was removed along with the rest of the ml4w Quickshell
+  layer, so the fallback's colors are frozen at whatever they were the last
+  time this pipeline ran, not live-updating with wallpaper changes.
+- **Removed entirely**: the ml4w Quickshell Sidebar/Wallpaper-picker/
+  Calendar/Welcome panels and the alternate Statusbar/Dock engine
+  (redundant with Noctalia's own control-center/OSD/wallpaper-picker,
+  confirmed via direct inspection rather than assumption before deleting);
+  the separate ml4w Settings app; the ml4w Hyprland Settings app (its one
+  load-bearing side effect -- border/gaps values -- baked directly into
+  `conf/layouts/default.conf` first); the `gtk-theme-switcher.sh` listener;
+  a handful of keybinds/windowrules that pointed at the now-deleted panels.
 
 This repo only owns the files that are purely Noctalia's: `config.toml`,
 `palettes/`, and the `ai-usage` plugin.
