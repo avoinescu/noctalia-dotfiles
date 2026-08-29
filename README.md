@@ -144,8 +144,8 @@ into ml4w-shared config.
 
 ## Custom themes
 
-14 hand-built palettes beyond Noctalia's own built-in/wallpaper-derived
-schemes. One is scheduled (Hellsing); the other 13 are static one-shot
+20 hand-built palettes beyond Noctalia's own built-in/wallpaper-derived
+schemes. One is scheduled (Hellsing); the other 19 are static one-shot
 toggles sharing `~/.config/hypr/scripts/custom-theme-lib.sh` (in `hyprlnd`)
 for apply/deactivate logic and cross-theme preemption -- a single
 `~/.cache/ml4w/active-static-theme` file tracks whichever one (if any) is
@@ -219,11 +219,17 @@ per the no-fake-quotes rule below, it also gets no fake sound.
 | `protoss` | Psionic gold, shield blue, khala-purple, on void-black | "My life for Aiur!" -- real Zealot line | "En Taro Adun" -- real Khalani ritual phrase | Random: 8 user-picked real clips (Power Overwhelming, Adun Toridas, and more) |
 | `terran` | Dominion thruster blue, gunmetal steel, warning-siren amber, on gunmetal-navy | "Rock and Roll!" -- real Marine combat bark | "Good to go." -- real Marine/SCV bark | Random: 3 real Marine/SCV barks |
 | `zerg` | Creep purple, acid-toxin green, bioluminescent orange, on organic near-black | "The Swarm is eternal. The Swarm is the future." -- real Overmind line | "The swarm recedes... for now." (flavor) | A real zergling screech |
+| `kerrigan` | Chitin magenta, psionic gold-orange, blade-crimson, on near-black violet | "I am the Swarm... vengeance shall be mine. For I am the Queen of Blades." -- real line | "I don't know if I deserve redemption... but our universe does." -- her real Legacy of the Void ending line | Her real "Kerrigan reporting" Heroes of the Storm select line |
+| `khorne` | Blood-red (dominant), brass/bronze, dark crimson, on near-black | "Blood for the Blood God! Skulls for the Skull Throne!" -- real recurring WH40K war cry | "Khorne cares not from whence the blood flows, only that it flows." -- real lore line | Random: 2 real "Blood for the Blood God" clips |
+| `tzeentch` | Pink Horror magenta, Blue Horror cyan, gold sorcery accent, on deep void-blue-black | "I am Tzeentch, and you are the puppet that dances to my tune." -- real Book of Tzeentch line | flavor text | None -- nothing confidently attributable to him specifically was findable |
+| `nurgle` | Putrid green (dominant), rust/decay brown, bile-yellow, on swampy near-black | "...through such decay, life begins anew." -- real Tome of Decay line | "Decay is the victor in all battles, the opposition to which there is no resistance." -- real Tome of Decay line | Random: 3 real Total War: Warhammer lines |
+| `slaanesh` | Excess pink/magenta, decadent purple, pearl/opulent gold, on deep purple-black | "Come to me... Partake of perfection!" -- real Total War: Warhammer III line | "For I am Slaanesh... My Thirst for you shall never be sated." -- real Liber Chaotica line | None -- nothing confidently attributable to Slaanesh specifically was findable |
+| `acecombat` | Sky blue, cloud white/silver, HUD-orange, on aviation navy-black | Mihaly Shilage's "This aircraft is my body... I must put my soul into it." | Avril Mead's "To Skies Unknown... the path to mankind's vast future remains standing, Granddad." | The real in-game AWACS radio alert tone |
 
 ## Theme picker
 
 A rofi menu (`noctalia-theme-picker.sh`, `hyprlnd`) instead of one keybind
-per theme -- that stopped scaling once 13 static themes plus Hellsing
+per theme -- that stopped scaling once 19 static themes plus Hellsing
 were in the mix. Deliberately scoped to *only* our own custom themes, not a
 general Noctalia scheme picker: no "Wallpaper (auto)", no builtin schemes,
 no community palettes -- those are still reachable via Noctalia's own
@@ -231,7 +237,7 @@ Settings if wanted. Lists, in order: Hellsing (an "Auto, current tier" entry
 plus all four tiers individually as forced previews -- a forced tier
 auto-corrects back within 5 minutes if it doesn't match the scheduler's
 current-hour tier, since Hellsing's poller doesn't know the difference
-between a preview and a real change), then all 13 static themes from the
+between a preview and a real change), then all 19 static themes from the
 table above.
 
 ## Keybinds
@@ -258,8 +264,8 @@ reach into the ml4w-managed hypr config tree; see below.
   and the ml4w-side (Quickshell/Hyprland) halves of every custom theme
 - `~/.config/hypr/scripts/custom-theme-lib.sh` -- shared apply/deactivate
   logic and cross-theme preemption for every static theme
-- `~/.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder,undead,xalatath,sylvanas,protoss,terran,zerg}-theme.sh`
-  -- the 13 static theme toggles
+- `~/.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder,undead,xalatath,sylvanas,protoss,terran,zerg,kerrigan,khorne,tzeentch,nurgle,slaanesh,acecombat}-theme.sh`
+  -- the 19 static theme toggles
 - `~/.config/hypr/scripts/noctalia-theme-picker.sh` -- the rofi theme picker
 - `~/.config/hypr/scripts/gen-theme-colors.py` -- the palette generator used
   in [CREATING-A-THEME.md](CREATING-A-THEME.md)
