@@ -144,8 +144,8 @@ into ml4w-shared config.
 
 ## Custom themes
 
-32 hand-built palettes beyond Noctalia's own built-in/wallpaper-derived
-schemes. One is scheduled (Hellsing); the other 31 are static one-shot
+38 hand-built palettes beyond Noctalia's own built-in/wallpaper-derived
+schemes. One is scheduled (Hellsing); the other 37 are static one-shot
 toggles sharing `~/.config/hypr/scripts/custom-theme-lib.sh` (in `hyprlnd`)
 for apply/deactivate logic and cross-theme preemption -- a single
 `~/.cache/ml4w/active-static-theme` file tracks whichever one (if any) is
@@ -237,11 +237,17 @@ per the no-fake-quotes rule below, it also gets no fake sound.
 | `kingarthur` | Roman imperial red/gold, decayed dark-fantasy green, on near-black | flavor text (too recent/niche a game to have verifiable dialogue yet) | flavor text | None -- nothing findable |
 | `godfather` | Classic mafia noir: black, gold, deep blood-red | "I'm gonna make him an offer he can't refuse." -- Don Vito Corleone, real film line | "...a man who doesn't spend time with his family can never be a real man." -- real film line | The real film line, on-notification's |
 | `dracula` | Gothic blood-red, castle stone-gray, pale moonlight-blue, on near-black | "What is a man?! A miserable little pile of secrets! But enough talk, HAVE AT YOU!!!" -- real Castlevania: Symphony of the Night line | flavor text | The real in-game delivery of that line |
+| `quake` | Gladiatorial gold, arena blood-red, gunmetal, on near-black | "Quad Damage!" -- real Quake III Arena announcer callout | flavor text | The real announcer line |
+| `silenthill` | Rust/blood-red, fog-gray, tarnished gold, on dim near-black | flavor text (Pyramid Head has no dialogue -- silent and faceless by design) | flavor text | Random: 2 real Silent Hill siren effects, not a spoken quote |
+| `residentevil` | S.T.A.R.S. blood-red, Spencer Mansion moss-green, tarnished gold, on near-black | Barry Burton's real "...almost a Jill sandwich!" line (1996 original) | flavor text | The real in-game delivery of that line |
+| `kotor` | Jedi-console blue, credit-chip gold, Sith-purple, on near-black | HK-47's real "Statement: HK-47 is ready to serve, master." line | flavor text, in his verified speech pattern | A real HK-47 voice line |
+| `darthmaul` | Sith blood-red, Zabrak-tattoo black, saber-gold, on near-black | Maul's real Phantom Menace line -- one of only 33 words he speaks in the film | flavor text | A real Darth Maul voice line |
+| `darthmalgus` | Sith Empire crimson, ash-black, void-purple, on near-black | Real trimmed line from SWTOR's "Deceived" cinematic | flavor text | None -- SWTOR is too niche for the soundboard sites this setup sources from |
 
 ## Theme picker
 
 A rofi menu (`noctalia-theme-picker.sh`, `hyprlnd`) instead of one keybind
-per theme -- that stopped scaling once 31 static themes plus Hellsing
+per theme -- that stopped scaling once 37 static themes plus Hellsing
 were in the mix. Deliberately scoped to *only* our own custom themes, not a
 general Noctalia scheme picker: no "Wallpaper (auto)", no builtin schemes,
 no community palettes -- those are still reachable via Noctalia's own
@@ -249,7 +255,7 @@ Settings if wanted. Lists, in order: Hellsing (an "Auto, current tier" entry
 plus all four tiers individually as forced previews -- a forced tier
 auto-corrects back within 5 minutes if it doesn't match the scheduler's
 current-hour tier, since Hellsing's poller doesn't know the difference
-between a preview and a real change), then all 31 static themes from the
+between a preview and a real change), then all 37 static themes from the
 table above.
 
 ## Keybinds
@@ -276,8 +282,8 @@ reach into the ml4w-managed hypr config tree; see below.
   and the ml4w-side (Quickshell/Hyprland) halves of every custom theme
 - `~/.config/hypr/scripts/custom-theme-lib.sh` -- shared apply/deactivate
   logic and cross-theme preemption for every static theme
-- `~/.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder,undead,xalatath,sylvanas,protoss,terran,zerg,kerrigan,khorne,tzeentch,nurgle,slaanesh,acecombat,geralt,yennefer,triss,baldursgate,dante,vergil,doom,skyrim,homm3,kingarthur,godfather,dracula}-theme.sh`
-  -- the 31 static theme toggles
+- `~/.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder,undead,xalatath,sylvanas,protoss,terran,zerg,kerrigan,khorne,tzeentch,nurgle,slaanesh,acecombat,geralt,yennefer,triss,baldursgate,dante,vergil,doom,skyrim,homm3,kingarthur,godfather,dracula,quake,silenthill,residentevil,kotor,darthmaul,darthmalgus}-theme.sh`
+  -- the 37 static theme toggles
 - `~/.config/hypr/scripts/noctalia-theme-picker.sh` -- the rofi theme picker
 - `~/.config/hypr/scripts/gen-theme-colors.py` -- the palette generator used
   in [CREATING-A-THEME.md](CREATING-A-THEME.md)
