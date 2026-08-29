@@ -144,8 +144,8 @@ into ml4w-shared config.
 
 ## Custom themes
 
-26 hand-built palettes beyond Noctalia's own built-in/wallpaper-derived
-schemes. One is scheduled (Hellsing); the other 25 are static one-shot
+32 hand-built palettes beyond Noctalia's own built-in/wallpaper-derived
+schemes. One is scheduled (Hellsing); the other 31 are static one-shot
 toggles sharing `~/.config/hypr/scripts/custom-theme-lib.sh` (in `hyprlnd`)
 for apply/deactivate logic and cross-theme preemption -- a single
 `~/.cache/ml4w/active-static-theme` file tracks whichever one (if any) is
@@ -231,11 +231,17 @@ per the no-fake-quotes rule below, it also gets no fake sound.
 | `baldursgate` | D&D parchment gold, arcane purple, torch-fire orange, on dark-fantasy near-black | Astarion's real "FULL CONCENTRATED POWER OF THE SUN!" line (BG3) | flavor text | Random: 2 real Astarion lines |
 | `dante` | Signature red, Rebellion steel-blue, hellfire-orange, on stylish near-black | "Jackpot!" -- real DMC catchphrase | flavor text | Random: 2 real "Jackpot!" takes (DMC3, Marvel vs. Capcom 3) |
 | `vergil` | Signature blue, Yamato steel-silver, cold Devil-Trigger ice-blue, on near-black | "Might controls everything. Without strength, you cannot protect anything." -- real DMC3 line | flavor text | A real Vergil voice line |
+| `doom` | Hellish red/orange, UAC tech-cyan, on near-black | "Rip and tear, until it is done." -- real Doom Eternal codex/narration line | flavor text | Random: 2 real lines ("Rip and tear", "The only thing they fear is you") |
+| `skyrim` | Nordic ice-blue, stone-gray, dragonfire-orange, on near-black | "Dovahkiin, Dovahkiin, naal ok zin los vahriin..." -- real Dragon-tongue lyrics | flavor text | A snippet of the real "Dragonborn" theme song (Jeremy Soule), the vocal chant section |
+| `homm3` | Parchment gold, heraldic blue, bronze, on near-black | flavor text (game is almost entirely unvoiced) | flavor text | A snippet of the real main-menu theme (Romero/King/Baca) |
+| `kingarthur` | Roman imperial red/gold, decayed dark-fantasy green, on near-black | flavor text (too recent/niche a game to have verifiable dialogue yet) | flavor text | None -- nothing findable |
+| `godfather` | Classic mafia noir: black, gold, deep blood-red | "I'm gonna make him an offer he can't refuse." -- Don Vito Corleone, real film line | "...a man who doesn't spend time with his family can never be a real man." -- real film line | The real film line, on-notification's |
+| `dracula` | Gothic blood-red, castle stone-gray, pale moonlight-blue, on near-black | "What is a man?! A miserable little pile of secrets! But enough talk, HAVE AT YOU!!!" -- real Castlevania: Symphony of the Night line | flavor text | The real in-game delivery of that line |
 
 ## Theme picker
 
 A rofi menu (`noctalia-theme-picker.sh`, `hyprlnd`) instead of one keybind
-per theme -- that stopped scaling once 25 static themes plus Hellsing
+per theme -- that stopped scaling once 31 static themes plus Hellsing
 were in the mix. Deliberately scoped to *only* our own custom themes, not a
 general Noctalia scheme picker: no "Wallpaper (auto)", no builtin schemes,
 no community palettes -- those are still reachable via Noctalia's own
@@ -243,7 +249,7 @@ Settings if wanted. Lists, in order: Hellsing (an "Auto, current tier" entry
 plus all four tiers individually as forced previews -- a forced tier
 auto-corrects back within 5 minutes if it doesn't match the scheduler's
 current-hour tier, since Hellsing's poller doesn't know the difference
-between a preview and a real change), then all 25 static themes from the
+between a preview and a real change), then all 31 static themes from the
 table above.
 
 ## Keybinds
@@ -270,8 +276,8 @@ reach into the ml4w-managed hypr config tree; see below.
   and the ml4w-side (Quickshell/Hyprland) halves of every custom theme
 - `~/.config/hypr/scripts/custom-theme-lib.sh` -- shared apply/deactivate
   logic and cross-theme preemption for every static theme
-- `~/.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder,undead,xalatath,sylvanas,protoss,terran,zerg,kerrigan,khorne,tzeentch,nurgle,slaanesh,acecombat,geralt,yennefer,triss,baldursgate,dante,vergil}-theme.sh`
-  -- the 25 static theme toggles
+- `~/.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder,undead,xalatath,sylvanas,protoss,terran,zerg,kerrigan,khorne,tzeentch,nurgle,slaanesh,acecombat,geralt,yennefer,triss,baldursgate,dante,vergil,doom,skyrim,homm3,kingarthur,godfather,dracula}-theme.sh`
+  -- the 31 static theme toggles
 - `~/.config/hypr/scripts/noctalia-theme-picker.sh` -- the rofi theme picker
 - `~/.config/hypr/scripts/gen-theme-colors.py` -- the palette generator used
   in [CREATING-A-THEME.md](CREATING-A-THEME.md)
