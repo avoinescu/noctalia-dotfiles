@@ -190,21 +190,28 @@ apply/revert script per theme in `hyprlnd`
 (`~/.config/hypr/scripts/<id>-theme.sh`), palette here at
 `palettes/<id>.json`. Each on/off toggle also fires a themed notification;
 quotes are verbatim where the source material has real ones, flavor text
-(clearly not claimed as a quote) where it doesn't. A theme can optionally
-also play a real sound clip alongside its on-notification --
-`play_theme_sound` (in `custom-theme-lib.sh`) plays
-`~/.config/hypr/sounds/<id>.mp3` via `paplay` if that file exists, silently
-skipped otherwise. Only Arthas has one so far.
+(clearly not claimed as a quote) where it doesn't.
 
-| Theme | Feel | On-notification | Off-notification |
-|---|---|---|---|
-| `joker` | Purple suit / toxic-green / blood-red on near-black | "Why So Serious? Introduce a little anarchy." | "You wouldn't want to miss the ending." |
-| `illidan` | Fel-green energy, demon purple, on near-black | "You are not prepared!" | "The Betrayer stands down." (flavor) |
-| `arthas` | Frostmourne ice-blue, plague green, blood crimson, on near-black navy | "Frostmourne hungers." + the real in-game Lich King voice line (`sounds/arthas.mp3`) | "At long last... no king rules forever, my son." -- Terenas Menethil's spirit, as Arthas dies atop Icecrown Citadel |
-| `bloodelves` | Gold and crimson with an arcane-green undertone, on deep maroon-black | "Anu belore dela'na! (The sun guides us.)" -- real Thalassian NPC line | "Anar'alah! (By the Light!)" -- real Thalassian NPC line |
-| `proxima` | Sacred amber flame, ashen stone, electric-blue lightning accent, on near-black bone | "Harden. Endure. Become the shell." (flavor -- Mortal Shell II released days before this theme was built, no canonical Proxima dialogue was findable yet) | "The shell falls silent once more." (flavor) |
-| `warframe` | Tenno cyan, Orokin gold, void purple, on deep space black | "Tenno... wake up." -- the Lotus, game's intro line | "The Old War is over. But another war... is just beginning." -- the Lotus |
-| `warthunder` | Olive drab, gunmetal gray, tracer orange, on asphalt near-black | "A good pilot can fly anything that flies..." -- real in-game loading-screen hint (no characters to quote) | "Prepare for the next sortie." (flavor) |
+Every theme but Proxima also plays a real sound alongside its
+on-notification -- `play_theme_sound` (in `custom-theme-lib.sh`) accepts
+either a single `~/.config/hypr/sounds/<id>.mp3` (played every time) or a
+`~/.config/hypr/sounds/<id>/` directory of clips (one picked at random each
+time), silently skipped if neither exists. Random pools exist where either
+multiple takes of the same line were worth keeping (War Thunder) or no
+single spoken quote fit and several real in-game lines/music snippets do
+(Blood Elves' zone/city theme music, Warframe's community-favorite lines).
+Proxima has none -- Mortal Shell II has no findable dialogue at all yet, so
+per the no-fake-quotes rule below, it also gets no fake sound.
+
+| Theme | Feel | On-notification | Off-notification | Sound on select |
+|---|---|---|---|---|
+| `joker` | Purple suit / toxic-green / blood-red on near-black | "Why So Serious? Introduce a little anarchy." | "You wouldn't want to miss the ending." | Heath Ledger's "Why so serious?" line |
+| `illidan` | Fel-green energy, demon purple, on near-black | "You are not prepared!" | "The Betrayer stands down." (flavor) | The real in-game "You are not prepared!" line |
+| `arthas` | Frostmourne ice-blue, plague green, blood crimson, on near-black navy | "Frostmourne hungers." | "At long last... no king rules forever, my son." -- Terenas Menethil's spirit, as Arthas dies atop Icecrown Citadel | The real in-game Lich King "Frostmourne hungers" voice line |
+| `bloodelves` | Gold and crimson with an arcane-green undertone, on deep maroon-black | "Anu belore dela'na! (The sun guides us.)" -- real Thalassian NPC line | "Anar'alah! (By the Light!)" -- real Thalassian NPC line | Random: Eversong Woods or Silvermoon City soundtrack snippet (Burning Crusade) |
+| `proxima` | Sacred amber flame, ashen stone, electric-blue lightning accent, on near-black bone | "Harden. Endure. Become the shell." (flavor -- Mortal Shell II released days before this theme was built, no canonical Proxima dialogue was findable yet) | "The shell falls silent once more." (flavor) | None -- no findable dialogue to source from yet |
+| `warframe` | Tenno cyan, Orokin gold, void purple, on deep space black | "Tenno... wake up." -- the Lotus, game's intro line | "The Old War is over. But another war... is just beginning." -- the Lotus | Random: one of 4 real in-game/community lines (that exact intro line has no findable clip) |
+| `warthunder` | Olive drab, gunmetal gray, tracer orange, on asphalt near-black | "A good pilot can fly anything that flies..." -- real in-game loading-screen hint (no characters to quote) | "Prepare for the next sortie." (flavor) | Random: "Attack the D point" (EN) or "Cible detruite" (FR) real voice comms |
 
 ## Theme picker
 

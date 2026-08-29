@@ -169,6 +169,40 @@ listen to more than one candidate before picking), save it to
 no-ops if the file doesn't exist, so this is safe to add even before the
 sound file itself is in place.
 
+**No single clip fits, or several are worth keeping?** Point `SOUND` at a
+*directory* instead of a file (`~/.config/hypr/sounds/<id>/`, one or more
+`*.mp3` files inside) -- `play_theme_sound` picks one at random each time
+the theme is turned on, no code change needed beyond the path. Good fits:
+multiple takes of the same line all worth keeping (War Thunder: EN/FR voice
+comms), or no single spoken quote works but several real lines/music
+snippets do (Blood Elves: zone/city theme music, since Thalassian NPC lines
+aren't cleanly clippable; Warframe: several community-favorite lines, since
+the theme's actual on-notification quote has no findable clip).
+
+**No real audio exists at all?** Skip the sound entirely rather than
+faking one or substituting an unrelated clip just to have *something* --
+same principle as the no-fake-quotes rule above. Proxima (Mortal Shell II)
+has none for exactly this reason.
+
+Downloading a short clip of a game's actual soundtrack (not a spoken line)
+works the same way but needs a different source than myinstants.com --
+search YouTube for the official/OST upload, pull audio with `yt-dlp -x
+--audio-format mp3` (a standalone binary from its GitHub releases works
+fine, no install needed), then trim a short section:
+
+```sh
+ffmpeg -ss <start-seconds> -t 20 -i full-track.mp3 \
+  -af "afade=t=in:st=0:d=2,afade=t=out:st=18:d=2" \
+  -codec:a libmp3lame -q:a 4 ~/.config/hypr/sounds/<id>/<name>.mp3
+```
+
+Put `-ss`/`-t` **before** `-i`, not after -- trimming after `-i` seeks
+unreliably on some mp3s and can silently produce a clip with real-looking
+duration but no actual audio (caught once by ear, confirmed with `ffmpeg
+-af volumedetect -f null /dev/null`, mean/max volume near -90dB). Sanity
+check any trimmed clip that way before wiring it in if you can't listen to
+it directly.
+
 ```sh
 chmod +x ~/.config/hypr/scripts/<id>-theme.sh
 bash -n ~/.config/hypr/scripts/<id>-theme.sh   # syntax check
