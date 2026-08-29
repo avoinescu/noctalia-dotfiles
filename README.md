@@ -144,8 +144,8 @@ into ml4w-shared config.
 
 ## Custom themes
 
-20 hand-built palettes beyond Noctalia's own built-in/wallpaper-derived
-schemes. One is scheduled (Hellsing); the other 19 are static one-shot
+26 hand-built palettes beyond Noctalia's own built-in/wallpaper-derived
+schemes. One is scheduled (Hellsing); the other 25 are static one-shot
 toggles sharing `~/.config/hypr/scripts/custom-theme-lib.sh` (in `hyprlnd`)
 for apply/deactivate logic and cross-theme preemption -- a single
 `~/.cache/ml4w/active-static-theme` file tracks whichever one (if any) is
@@ -225,11 +225,17 @@ per the no-fake-quotes rule below, it also gets no fake sound.
 | `nurgle` | Putrid green (dominant), rust/decay brown, bile-yellow, on swampy near-black | "...through such decay, life begins anew." -- real Tome of Decay line | "Decay is the victor in all battles, the opposition to which there is no resistance." -- real Tome of Decay line | Random: 3 real Total War: Warhammer lines |
 | `slaanesh` | Excess pink/magenta, decadent purple, pearl/opulent gold, on deep purple-black | "Come to me... Partake of perfection!" -- real Total War: Warhammer III line | "For I am Slaanesh... My Thirst for you shall never be sated." -- real Liber Chaotica line | None -- nothing confidently attributable to Slaanesh specifically was findable |
 | `acecombat` | Sky blue, cloud white/silver, HUD-orange, on aviation navy-black | Mihaly Shilage's "This aircraft is my body... I must put my soul into it." | Avril Mead's "To Skies Unknown... the path to mankind's vast future remains standing, Granddad." | The real in-game AWACS radio alert tone |
+| `geralt` | Medallion silver, toxic potion-green, sign-magic amber, on dark leather-brown near-black | "Evil is evil... I prefer not to choose at all." -- real line (The Last Wish / Witcher 3) | flavor text | The real in-game delivery of that same line |
+| `yennefer` | Deep violet sorcery, obsidian black-and-white, lilac/pearl accent, on near-black | flavor text | "I am not a tool. I am Yennefer of Vengerberg." -- real line | None -- nothing findable was actually her (one hit was mislabeled) |
+| `triss` | Fiery red hair, warm amber/copper fire-magic, cool sapphire accent, on near-black | flavor text | "We had our chance, but... let it go." -- real line | None -- nothing findable on myinstants |
+| `baldursgate` | D&D parchment gold, arcane purple, torch-fire orange, on dark-fantasy near-black | Astarion's real "FULL CONCENTRATED POWER OF THE SUN!" line (BG3) | flavor text | Random: 2 real Astarion lines |
+| `dante` | Signature red, Rebellion steel-blue, hellfire-orange, on stylish near-black | "Jackpot!" -- real DMC catchphrase | flavor text | Random: 2 real "Jackpot!" takes (DMC3, Marvel vs. Capcom 3) |
+| `vergil` | Signature blue, Yamato steel-silver, cold Devil-Trigger ice-blue, on near-black | "Might controls everything. Without strength, you cannot protect anything." -- real DMC3 line | flavor text | A real Vergil voice line |
 
 ## Theme picker
 
 A rofi menu (`noctalia-theme-picker.sh`, `hyprlnd`) instead of one keybind
-per theme -- that stopped scaling once 19 static themes plus Hellsing
+per theme -- that stopped scaling once 25 static themes plus Hellsing
 were in the mix. Deliberately scoped to *only* our own custom themes, not a
 general Noctalia scheme picker: no "Wallpaper (auto)", no builtin schemes,
 no community palettes -- those are still reachable via Noctalia's own
@@ -237,7 +243,7 @@ Settings if wanted. Lists, in order: Hellsing (an "Auto, current tier" entry
 plus all four tiers individually as forced previews -- a forced tier
 auto-corrects back within 5 minutes if it doesn't match the scheduler's
 current-hour tier, since Hellsing's poller doesn't know the difference
-between a preview and a real change), then all 19 static themes from the
+between a preview and a real change), then all 25 static themes from the
 table above.
 
 ## Keybinds
@@ -264,8 +270,8 @@ reach into the ml4w-managed hypr config tree; see below.
   and the ml4w-side (Quickshell/Hyprland) halves of every custom theme
 - `~/.config/hypr/scripts/custom-theme-lib.sh` -- shared apply/deactivate
   logic and cross-theme preemption for every static theme
-- `~/.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder,undead,xalatath,sylvanas,protoss,terran,zerg,kerrigan,khorne,tzeentch,nurgle,slaanesh,acecombat}-theme.sh`
-  -- the 19 static theme toggles
+- `~/.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder,undead,xalatath,sylvanas,protoss,terran,zerg,kerrigan,khorne,tzeentch,nurgle,slaanesh,acecombat,geralt,yennefer,triss,baldursgate,dante,vergil}-theme.sh`
+  -- the 25 static theme toggles
 - `~/.config/hypr/scripts/noctalia-theme-picker.sh` -- the rofi theme picker
 - `~/.config/hypr/scripts/gen-theme-colors.py` -- the palette generator used
   in [CREATING-A-THEME.md](CREATING-A-THEME.md)
