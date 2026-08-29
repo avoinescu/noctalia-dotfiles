@@ -162,18 +162,19 @@ A "Control Art Restriction System": color intensity ramps up through the day
 like Alucard's restriction releases, muted brick-red by morning to full
 blood-crimson/gold/black by night.
 
-| Tier | Hours | Feel |
-|---|---|---|
-| `seal` | 06-11 | muted, restrained |
-| `release-1` | 11-17 | "Let's go to work." |
-| `release-2` | 17-21 | the hounds are loose |
-| `release-true` | 21-06 | all restrictions lifted |
+| Tier | Hours | Feel | Sound on transition |
+|---|---|---|---|
+| `seal` | 06-11 | muted, restrained | None -- the restrained state has no release line to play |
+| `release-1` | 11-17 | "Let's go to work." | Real Japanese-dub "Control Art Restriction Systems 3-2-1" release line |
+| `release-2` | 17-21 | the hounds are loose | Same clip as release-1 -- the source scene doesn't split into two separate moments |
+| `release-true` | 21-06 | all restrictions lifted | Real Japanese-dub "Bird of Hermes" full-power line |
 
-Applies to Noctalia's own palette *and* the still-running ml4w Quickshell
-apps and Hyprland's window borders (three separate theming surfaces, kept in
-sync by one generator). Palettes here: `palettes/hellsing-*.json`. Everything
-else -- the poller, the shared apply logic, the Quickshell/Hyprland color
-files, the wallpaper pool, the fastfetch logo swap -- lives in `hyprlnd`:
+Applies to Noctalia's own palette *and* the two surviving ml4w Quickshell
+panels (Power, AI-usage) and Hyprland's window borders (three separate
+theming surfaces, kept in sync by one generator). Palettes here:
+`palettes/hellsing-*.json`. Everything else -- the poller, the shared apply
+logic, the sounds, the Quickshell/Hyprland color files, the wallpaper pool,
+the fastfetch logo swap -- lives in `hyprlnd`:
 
 - `~/.config/hypr/scripts/hellsing-lib.sh` -- shared tier-application logic
 - `~/.config/hypr/scripts/hellsing-scheduler.sh` -- the 5-minute poller,
