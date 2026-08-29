@@ -144,8 +144,8 @@ into ml4w-shared config.
 
 ## Custom themes
 
-Eight hand-built palettes beyond Noctalia's own built-in/wallpaper-derived
-schemes. One is scheduled (Hellsing); the other seven are static one-shot
+14 hand-built palettes beyond Noctalia's own built-in/wallpaper-derived
+schemes. One is scheduled (Hellsing); the other 13 are static one-shot
 toggles sharing `~/.config/hypr/scripts/custom-theme-lib.sh` (in `hyprlnd`)
 for apply/deactivate logic and cross-theme preemption -- a single
 `~/.cache/ml4w/active-static-theme` file tracks whichever one (if any) is
@@ -213,11 +213,17 @@ per the no-fake-quotes rule below, it also gets no fake sound.
 | `proxima` | Sacred amber flame, ashen stone, electric-blue lightning accent, on near-black bone | "Harden. Endure. Become the shell." (flavor -- Mortal Shell II released days before this theme was built, no canonical Proxima dialogue was findable yet) | "The shell falls silent once more." (flavor) | None -- no findable dialogue to source from yet |
 | `warframe` | Tenno cyan, Orokin gold, void purple, on deep space black | "Tenno... wake up." -- the Lotus, game's intro line | "The Old War is over. But another war... is just beginning." -- the Lotus | Random: one of 4 real in-game/community lines (that exact intro line has no findable clip) |
 | `warthunder` | Olive drab, gunmetal gray, tracer orange, on asphalt near-black | "A good pilot can fly anything that flies..." -- real in-game loading-screen hint (no characters to quote) | "Prepare for the next sortie." (flavor) | Random: "Attack the D point" (EN) or "Cible detruite" (FR) real voice comms |
+| `undead` | Forsaken royal purple, plague-olive, bone-ivory, necrotic red, on crypt-black | "Did you think we had forgotten?... Behold, now, the terrible vengeance of the Forsaken! Death to the Scourge!" -- Sylvanas, founding the Forsaken | "Give my regards to the endless dark." -- Sylvanas, Heroes of the Storm | Sylvanas's real in-game Banshee Wail sound effect |
+| `xalatath` | Void purple, void-whisper teal, ancient-dagger gold, on obsidian | "Inevitably... the Void consumes everything." -- real Mythic+ affix line | "We will survive." -- real on-click farewell line | None -- too recent/niche a character to have findable clips yet |
+| `sylvanas` | Banshee spectral teal, Forsaken purple, Dark Ranger blood-crimson, on near-black | "ON YOUR KNEES! The Banshee Queen has plans for you!" -- real combat line | "It shall be done. However long it takes." -- her real Shadowlands 9.2 epilogue line, accepting her Maw penance | Random: 4 real lines/sounds ("For the Horde!", her Hearthstone intro, a combat line, her laugh) |
+| `protoss` | Psionic gold, shield blue, khala-purple, on void-black | "My life for Aiur!" -- real Zealot line | "En Taro Adun" -- real Khalani ritual phrase | Random: 8 user-picked real clips (Power Overwhelming, Adun Toridas, and more) |
+| `terran` | Dominion thruster blue, gunmetal steel, warning-siren amber, on gunmetal-navy | "Rock and Roll!" -- real Marine combat bark | "Good to go." -- real Marine/SCV bark | Random: 3 real Marine/SCV barks |
+| `zerg` | Creep purple, acid-toxin green, bioluminescent orange, on organic near-black | "The Swarm is eternal. The Swarm is the future." -- real Overmind line | "The swarm recedes... for now." (flavor) | A real zergling screech |
 
 ## Theme picker
 
 A rofi menu (`noctalia-theme-picker.sh`, `hyprlnd`) instead of one keybind
-per theme -- that stopped scaling once seven static themes plus Hellsing
+per theme -- that stopped scaling once 13 static themes plus Hellsing
 were in the mix. Deliberately scoped to *only* our own custom themes, not a
 general Noctalia scheme picker: no "Wallpaper (auto)", no builtin schemes,
 no community palettes -- those are still reachable via Noctalia's own
@@ -225,7 +231,7 @@ Settings if wanted. Lists, in order: Hellsing (an "Auto, current tier" entry
 plus all four tiers individually as forced previews -- a forced tier
 auto-corrects back within 5 minutes if it doesn't match the scheduler's
 current-hour tier, since Hellsing's poller doesn't know the difference
-between a preview and a real change), then all seven static themes from the
+between a preview and a real change), then all 13 static themes from the
 table above.
 
 ## Keybinds
@@ -252,8 +258,8 @@ reach into the ml4w-managed hypr config tree; see below.
   and the ml4w-side (Quickshell/Hyprland) halves of every custom theme
 - `~/.config/hypr/scripts/custom-theme-lib.sh` -- shared apply/deactivate
   logic and cross-theme preemption for every static theme
-- `~/.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder}-theme.sh`
-  -- the seven static theme toggles
+- `~/.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder,undead,xalatath,sylvanas,protoss,terran,zerg}-theme.sh`
+  -- the 13 static theme toggles
 - `~/.config/hypr/scripts/noctalia-theme-picker.sh` -- the rofi theme picker
 - `~/.config/hypr/scripts/gen-theme-colors.py` -- the palette generator used
   in [CREATING-A-THEME.md](CREATING-A-THEME.md)
