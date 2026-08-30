@@ -233,12 +233,20 @@ bash -n ~/.config/hypr/scripts/<id>-theme.sh   # syntax check
 
 ## 6. Register it in the picker
 
-Add one line to `~/.config/hypr/scripts/noctalia-theme-picker.sh`, in the
-`add "..."` list:
+Add one line to `~/.config/hypr/scripts/theme-list.sh`'s `THEMES` array
+(`id|Display Label|tier`, tier empty for a one-tier theme):
 
 ```bash
-add "<Display Name>"    "$SCRIPTS_DIR/<id>-theme.sh on"
+"<id>|<Display Name>|"
 ```
+
+This one file is the single source of truth for both pickers --
+`noctalia-theme-picker.sh` (the rofi menu, kept as a dormant fallback) and
+`ThemePickerApp` (the QML grid picker bound to `$mainMod SHIFT, P`, which
+also shows a wallpaper thumbnail per theme) both read it, so there's
+nothing else to keep in sync. Make sure `~/Pictures/wallpaper/<id>/` has at
+least one `.jpg`/`.jpeg`/`.png` in it before opening the grid picker, or
+that theme's card shows a placeholder instead of a thumbnail.
 
 ## 7. Test it
 

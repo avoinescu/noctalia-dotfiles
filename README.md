@@ -249,24 +249,36 @@ per the no-fake-quotes rule below, it also gets no fake sound.
 
 ## Theme picker
 
-A rofi menu (`noctalia-theme-picker.sh`, `hyprlnd`) instead of one keybind
-per theme -- that stopped scaling once 40 static themes plus Hellsing
-were in the mix. Deliberately scoped to *only* our own custom themes, not a
+A QML grid (`ThemePickerApp`, `hyprlnd`, part of the `qs` shell process
+alongside `PowerApp`/`AIUsageApp`) replaced the old rofi text menu once 40
+static themes plus Hellsing made a plain list hard to browse -- one card per
+theme, showing its name and a real wallpaper thumbnail pulled fresh from
+`~/Pictures/wallpaper/<id>/` every time the picker opens, click to apply.
+The currently-active theme's card gets a highlighted border. A search field
+filters by name. Deliberately scoped to *only* our own custom themes, not a
 general Noctalia scheme picker: no "Wallpaper (auto)", no builtin schemes,
 no community palettes -- those are still reachable via Noctalia's own
-Settings if wanted. Lists, in order: Hellsing (an "Auto, current tier" entry
-plus all four tiers individually as forced previews -- a forced tier
-auto-corrects back within 5 minutes if it doesn't match the scheduler's
-current-hour tier, since Hellsing's poller doesn't know the difference
-between a preview and a real change), then all 40 static themes from the
-table above.
+Settings if wanted.
+
+Both the grid and the old rofi menu (`noctalia-theme-picker.sh`, kept as an
+unbound fallback -- run it directly, `bash
+~/.config/hypr/scripts/noctalia-theme-picker.sh`, if the QML app ever
+breaks) read the same list from `~/.config/hypr/scripts/theme-list.sh`, so
+they can't drift out of sync. That list has, in order: Hellsing (an "Auto,
+current tier" entry plus all four tiers individually as forced previews --
+a forced tier auto-corrects back within 5 minutes if it doesn't match the
+scheduler's current-hour tier, since Hellsing's poller doesn't know the
+difference between a preview and a real change), then all 40 static themes
+from the table above. Known limitation: since all 5 Hellsing entries apply
+via the same `ACTIVE_STATIC` marker, their cards all highlight together in
+the grid with no way to tell which specific tier is actually active.
 
 ## Keybinds
 
 | Keybind | Action |
 |---|---|
 | `Super+Shift+N` | Switch shell profile (`ml4w` ⇄ `noctalia`) |
-| `Super+Shift+P` | Open the Noctalia theme picker (rofi menu, noctalia profile only) |
+| `Super+Shift+P` | Open the custom-theme picker (QML grid, noctalia profile only) |
 | `Super+Shift+C` | Toggle Noctalia's control center panel (noctalia profile only) |
 
 The theme picker replaced the old dedicated `Super+Shift+J` (Joker) /
@@ -287,7 +299,14 @@ reach into the ml4w-managed hypr config tree; see below.
   logic and cross-theme preemption for every static theme
 - `~/.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder,undead,xalatath,sylvanas,protoss,terran,zerg,kerrigan,khorne,tzeentch,nurgle,slaanesh,acecombat,geralt,yennefer,triss,baldursgate,dante,vergil,doom,skyrim,homm3,kingarthur,godfather,dracula,quake,silenthill,residentevil,kotor,darthmaul,darthmalgus,darthvader,taintedgrail,titanfall2}-theme.sh`
   -- the 40 static theme toggles
-- `~/.config/hypr/scripts/noctalia-theme-picker.sh` -- the rofi theme picker
+- `~/.config/hypr/scripts/theme-list.sh` -- single source of truth for every
+  picker entry (id/label/tier), read by both pickers below
+- `~/.config/hypr/scripts/theme-list-json.sh` -- emits `theme-list.sh` as
+  JSON for `ThemePickerApp` to consume
+- `~/.config/hypr/scripts/noctalia-theme-picker.sh` -- the old rofi theme
+  picker, kept as an unbound fallback
+- `~/.config/quickshell/ThemePickerApp/` -- the QML grid theme picker,
+  loaded into the main `qs` shell process via `shell.qml`
 - `~/.config/hypr/scripts/gen-theme-colors.py` -- the palette generator used
   in [CREATING-A-THEME.md](CREATING-A-THEME.md)
 - `~/.config/hypr/scripts/noctalia-theme-quickshell.sh` and
