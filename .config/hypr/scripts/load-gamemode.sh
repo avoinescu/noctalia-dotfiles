@@ -7,7 +7,7 @@
 # 
 
 # Notifications
-source "$HOME/.config/ml4w/scripts/ml4w-notification-handler"
+source "$HOME/.config/hypr/scripts/notify-handler.sh"
 
 _loadGameMode() {
     hyprctl --batch "\
@@ -20,7 +20,7 @@ _loadGameMode() {
         keyword decoration:rounding 0"
 }
 
-if [ -f $HOME/.config/ml4w/settings/gamemode-enabled ]; then
+if [ -f $HOME/.cache/hypr/gamemode-enabled ]; then
     _loadGameMode
     notify_user --a "System" \
         --i "joystick" \

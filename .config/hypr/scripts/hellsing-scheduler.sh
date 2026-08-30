@@ -5,7 +5,7 @@
 # own palette (bar/panels/kitty/gtk via its app-theming) and the still-running
 # ml4w Quickshell apps (Sidebar, Power, AIUsageWindow, etc.) via colors.json.
 #
-# Toggle: ~/.config/ml4w/settings/hellsing-theme ("on"/"off", default on) --
+# Toggle: ~/.config/hypr/settings/hellsing-theme ("on"/"off", default on) --
 # or Super+Shift+H (hellsing-theme.sh) for an instant on/off that doesn't
 # wait for this poller's next tick.
 # Palettes: ~/.config/noctalia/palettes/hellsing-*.json (Noctalia)

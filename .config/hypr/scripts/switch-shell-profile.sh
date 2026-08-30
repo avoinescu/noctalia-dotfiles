@@ -22,7 +22,7 @@ lock_file="$XDG_RUNTIME_DIR/switch-shell-profile.lock"
 exec 200>"$lock_file"
 flock 200
 
-SETTINGS_FILE="$HOME/.config/ml4w/settings/shell-profile"
+SETTINGS_FILE="$HOME/.config/hypr/settings/shell-profile"
 CURRENT="ml4w"
 [ -f "$SETTINGS_FILE" ] && CURRENT="$(cat "$SETTINGS_FILE")"
 

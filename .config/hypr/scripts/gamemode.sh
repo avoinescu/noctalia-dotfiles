@@ -10,17 +10,17 @@
 ml4w_cache_folder="$HOME/.cache/ml4w/hyprland-dotfiles"
 
 # Notifications
-source "$HOME/.config/ml4w/scripts/ml4w-notification-handler"
+source "$HOME/.config/hypr/scripts/notify-handler.sh"
 APP_NAME="System"
 NOTIFICATION_ICON="joystick"
 
-if [ -f $HOME/.config/ml4w/settings/gamemode-enabled ]; then
+if [ -f $HOME/.cache/hypr/gamemode-enabled ]; then
   if [ -f $ml4w_cache_folder/restart-wpauto ]; then
     rm $ml4w_cache_folder/restart-wpauto
-    $HOME/.config/ml4w/scripts/ml4w-wallpaper-automation &
+    $HOME/.config/hypr/scripts/wallpaper-automation.sh &
   fi
   hyprctl reload
-  rm $HOME/.config/ml4w/settings/gamemode-enabled
+  rm $HOME/.cache/hypr/gamemode-enabled
   notify_user --a "${APP_NAME}" \
             --i "${NOTIFICATION_ICON}" \
             --s "Gamemode deactivated" \
@@ -28,10 +28,10 @@ if [ -f $HOME/.config/ml4w/settings/gamemode-enabled ]; then
 else
   if [ -f $ml4w_cache_folder/wallpaper-automation ]; then
     touch $ml4w_cache_folder/restart-wpauto
-    $HOME/.config/ml4w/scripts/ml4w-wallpaper-automation
+    $HOME/.config/hypr/scripts/wallpaper-automation.sh
   fi
   hyprctl eval "activate_gamemode()"
-  touch $HOME/.config/ml4w/settings/gamemode-enabled
+  touch $HOME/.cache/hypr/gamemode-enabled
   notify_user --a "${APP_NAME}" \
           --i "${NOTIFICATION_ICON}" \
           --s "Gamemode activated" \

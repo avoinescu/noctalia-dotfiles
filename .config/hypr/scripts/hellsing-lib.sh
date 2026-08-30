@@ -9,7 +9,7 @@ set -uo pipefail
 # hellsing-scheduler.sh hadn't, so it lives here instead where both get it).
 source "$(dirname "${BASH_SOURCE[0]}")/custom-theme-lib.sh"
 
-HELLSING_TOGGLE="$HOME/.config/ml4w/settings/hellsing-theme"
+HELLSING_TOGGLE="$HOME/.config/hypr/settings/hellsing-theme"
 HELLSING_STATE="$HOME/.cache/ml4w/hellsing-tier"
 HELLSING_WALLPAPER_DIR="$HOME/Pictures/wallpaper/hellsing"
 NORMAL_LOGO="$HOME/.config/fastfetch/assets/alien.gif"

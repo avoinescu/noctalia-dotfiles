@@ -3,7 +3,7 @@
 # -----------------------------------------------------
 # Load Launcher
 # -----------------------------------------------------
-launcher=$(cat $HOME/.config/ml4w/settings/launcher)
+launcher=$(cat $HOME/.config/hypr/settings/launcher)
 
 # Use Walker
 _launch_walker() {

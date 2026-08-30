@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Applies the persisted shell profile (~/.config/ml4w/settings/shell-profile)
+# Applies the persisted shell profile (~/.config/hypr/settings/shell-profile)
 # at Hyprland login. This is what conf/autostart.conf actually execs -- see
 # its header for why conf/autostart.lua's branching logic never runs.
 #
@@ -10,7 +10,7 @@
 set -uo pipefail
 
 shell_profile="ml4w"
-f="$HOME/.config/ml4w/settings/shell-profile"
+f="$HOME/.config/hypr/settings/shell-profile"
 [ -f "$f" ] && shell_profile="$(cat "$f")"
 
 exec "$(dirname "${BASH_SOURCE[0]}")/switch-shell-profile.sh" "$shell_profile"

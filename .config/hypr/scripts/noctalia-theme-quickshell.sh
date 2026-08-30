@@ -30,7 +30,7 @@ wallpaper="${1:?usage: noctalia-theme-quickshell.sh <wallpaper-path>}"
 CACHE_FOLDER="$HOME/.cache/ml4w/hyprland-dotfiles"
 BLURRED_WALLPAPER="$CACHE_FOLDER/blurred_wallpaper.png"
 RASI_FILE="$CACHE_FOLDER/current_wallpaper.rasi"
-BLUR="$(cat "$HOME/.config/ml4w/settings/blur.sh" 2>/dev/null || echo "50x30")"
+BLUR="$(cat "$HOME/.config/hypr/settings/blur.sh" 2>/dev/null || echo "50x30")"
 mkdir -p "$CACHE_FOLDER"
 magick "$wallpaper" -resize 75% "$BLURRED_WALLPAPER"
 [ "$BLUR" != "0x0" ] && magick "$BLURRED_WALLPAPER" -blur "$BLUR" "$BLURRED_WALLPAPER"
@@ -39,7 +39,7 @@ echo "* { current-image: url(\"$BLURRED_WALLPAPER\", height); }" > "$RASI_FILE"
 active_static=""
 [ -f "$HOME/.cache/ml4w/active-static-theme" ] && active_static="$(cat "$HOME/.cache/ml4w/active-static-theme")"
 hellsing_on="off"
-[ -f "$HOME/.config/ml4w/settings/hellsing-theme" ] && hellsing_on="$(cat "$HOME/.config/ml4w/settings/hellsing-theme")"
+[ -f "$HOME/.config/hypr/settings/hellsing-theme" ] && hellsing_on="$(cat "$HOME/.config/hypr/settings/hellsing-theme")"
 if [ -n "$active_static" ] || [ "$hellsing_on" = "on" ]; then
     exit 0
 fi

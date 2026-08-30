@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 WALLPAPER_FOLDER="$HOME/Pictures/wallpapers"
-if [ -f "$HOME/.config/ml4w/settings/wallpaper-folder" ]; then
-    RAW_FOLDER=$(cat "$HOME/.config/ml4w/settings/wallpaper-folder")
+if [ -f "$HOME/.config/hypr/settings/wallpaper-folder" ]; then
+    RAW_FOLDER=$(cat "$HOME/.config/hypr/settings/wallpaper-folder")
     WALLPAPER_FOLDER="${RAW_FOLDER//\$HOME/$HOME}"
     WALLPAPER_FOLDER="${WALLPAPER_FOLDER//\~/$HOME}"
 fi

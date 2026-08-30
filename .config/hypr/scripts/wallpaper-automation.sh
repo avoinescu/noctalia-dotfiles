@@ -9,11 +9,11 @@
 ml4w_cache_folder="$HOME/.cache/ml4w/hyprland-dotfiles"
 
 # Notifications
-source "$HOME/.config/ml4w/scripts/ml4w-notification-handler"
+source "$HOME/.config/hypr/scripts/notify-handler.sh"
 APP_NAME="Waypaper"
 NOTIFICATION_ICON="preferences-desktop-wallpaper-symbolic"
 
-sec=$(cat ~/.config/ml4w/settings/wallpaper-automation.sh)
+sec=$(cat ~/.config/hypr/settings/wallpaper-automation.sh)
 _setWallpaperRandomly() {
     waypaper --random
     echo ":: Next wallpaper in 60 seconds..."

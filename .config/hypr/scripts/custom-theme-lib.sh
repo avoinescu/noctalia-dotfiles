@@ -15,7 +15,7 @@
 set -uo pipefail
 
 ACTIVE_STATIC="$HOME/.cache/ml4w/active-static-theme"
-HELLSING_TOGGLE="$HOME/.config/ml4w/settings/hellsing-theme"
+HELLSING_TOGGLE="$HOME/.config/hypr/settings/hellsing-theme"
 HELLSING_STATE="$HOME/.cache/ml4w/hellsing-tier"
 HELLSING_PREV="$HOME/.cache/ml4w/static-prev-hellsing-toggle"
 NORMAL_LOGO="$HOME/.config/fastfetch/assets/alien.gif"

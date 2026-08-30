@@ -12,7 +12,7 @@ set -uo pipefail
 SCRIPTS_DIR="$(dirname "${BASH_SOURCE[0]}")"
 
 shell_profile="ml4w"
-[ -f "$HOME/.config/ml4w/settings/shell-profile" ] && shell_profile="$(cat "$HOME/.config/ml4w/settings/shell-profile")"
+[ -f "$HOME/.config/hypr/settings/shell-profile" ] && shell_profile="$(cat "$HOME/.config/hypr/settings/shell-profile")"
 if [ "$shell_profile" != "noctalia" ]; then
     notify-send -a "Theme" "Switch to the noctalia profile first" "Super+Shift+N" 2>/dev/null
     exit 0

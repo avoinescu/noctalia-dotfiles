@@ -57,11 +57,11 @@ PanelWindow {
 
     function activateSelected() {
         var commands = [
-            Quickshell.env("HOME") + "/.config/ml4w/scripts/ml4w-power -l",
-            Quickshell.env("HOME") + "/.config/ml4w/scripts/ml4w-power -s",
-            Quickshell.env("HOME") + "/.config/ml4w/scripts/ml4w-power -e",
-            Quickshell.env("HOME") + "/.config/ml4w/scripts/ml4w-power -r",
-            Quickshell.env("HOME") + "/.config/ml4w/scripts/ml4w-power -p"
+            "noctalia msg session lock",
+            "noctalia msg session suspend",
+            "noctalia msg session logout",
+            "noctalia msg session reboot",
+            "noctalia msg session shutdown"
         ]
         if (selectedIndex >= 0 && selectedIndex < commands.length) {
             Quickshell.execDetached(["bash", "-c", commands[selectedIndex]])
@@ -213,27 +213,27 @@ PanelWindow {
             PowerButton {
                 iconSrc: "../shared/icons/lock.svg"
                 selected: root.selectedIndex === 0
-                onClicked: { Quickshell.execDetached(["bash", "-c", Quickshell.env("HOME") + "/.config/ml4w/scripts/ml4w-power -l"]) }
+                onClicked: { Quickshell.execDetached(["bash", "-c", "noctalia msg session lock"]) }
             }
             PowerButton {
                 iconSrc: "../shared/icons/suspend.svg"
                 selected: root.selectedIndex === 1
-                onClicked: { Quickshell.execDetached(["bash", "-c", Quickshell.env("HOME") + "/.config/ml4w/scripts/ml4w-power -s"]) }
+                onClicked: { Quickshell.execDetached(["bash", "-c", "noctalia msg session suspend"]) }
             }
             PowerButton {
                 iconSrc: "../shared/icons/logout.svg"
                 selected: root.selectedIndex === 2
-                onClicked: { Quickshell.execDetached(["bash", "-c", Quickshell.env("HOME") + "/.config/ml4w/scripts/ml4w-power -e"]) }
+                onClicked: { Quickshell.execDetached(["bash", "-c", "noctalia msg session logout"]) }
             }
             PowerButton {
                 iconSrc: "../shared/icons/reboot.svg"
                 selected: root.selectedIndex === 3
-                onClicked: { Quickshell.execDetached(["bash", "-c", Quickshell.env("HOME") + "/.config/ml4w/scripts/ml4w-power -r"]) }
+                onClicked: { Quickshell.execDetached(["bash", "-c", "noctalia msg session reboot"]) }
             }
             PowerButton {
                 iconSrc: "../shared/icons/power.svg"
                 selected: root.selectedIndex === 4
-                onClicked: { Quickshell.execDetached(["bash", "-c", Quickshell.env("HOME") + "/.config/ml4w/scripts/ml4w-power -p"]) }
+                onClicked: { Quickshell.execDetached(["bash", "-c", "noctalia msg session shutdown"]) }
             }
         }
     }
