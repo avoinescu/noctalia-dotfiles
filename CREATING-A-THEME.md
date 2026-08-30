@@ -269,12 +269,11 @@ between.
 ## 8. Document and commit
 
 - Add a row to the theme table in this repo's [README](README.md#static-themes----one-shot-no-schedule).
-- Copy the new/changed files from `~/.config/...` into their matching paths
-  under `~/projects/hyprlnd/` (everything under `.config/hypr/scripts/`,
-  `.config/ml4w/colors/`, `.config/hypr/colors/`, `.config/fastfetch/assets/`,
-  `.config/hypr/sounds/` lives in `hyprlnd`, not here).
-- Commit `hyprlnd` (the script, colors, logo) and `noctalia-dotfiles` (the
-  Noctalia palette JSON, the README update) separately.
+- Nothing to copy -- `.config/hypr`, `.config/ml4w/colors`, and
+  `.config/fastfetch` are all real symlinks into this repo, so the new
+  theme script, its Hyprland colors, its fastfetch face, and its Noctalia
+  palette JSON are already sitting in the working tree. One `git add`, one
+  commit, here.
 
 ## Scheduled themes instead of static
 

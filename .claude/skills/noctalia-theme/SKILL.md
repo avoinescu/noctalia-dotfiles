@@ -106,7 +106,7 @@ every login — the opposite direction), the recolored theme silently
 reverts on the next login, and GTK3 apps reading settings.ini directly
 never see it at all. Fix by mirroring gsettings back into both
 `settings.ini` files on Noctalia's `colors_changed` hook — see
-`~/projects/hyprlnd/.config/hypr/scripts/noctalia-sync-icon-theme.sh`. Test
+`~/projects/noctalia-dotfiles/.config/hypr/scripts/noctalia-sync-icon-theme.sh`. Test
 the direction on any given machine before assuming this gotcha applies:
 `grep icon-theme ~/.config/gtk-3.0/settings.ini` before and after
 `noctalia msg templates-apply` tells you immediately.
@@ -122,7 +122,7 @@ noctalia profile (Noctalia re-resolving its palette on its own startup was
 enough). Before writing any shared config file from a Noctalia hook,
 `grep -rl "$FILE_BASENAME" ~/.config/ml4w/listeners/ ~/.config/hypr/scripts/`
 to check who else watches it, and gate their reaction on
-`~/.config/ml4w/settings/shell-profile` if so -- see
+`~/.config/hypr/settings/shell-profile` if so -- see
 `~/projects/hyprlnd/.config/ml4w/listeners/gtk-theme-switcher.sh`'s
 `apply_theme()` for the pattern.
 
@@ -135,7 +135,7 @@ and `colors_changed` (fires after every palette resolve, including a
 the escape hatch for anything the builtin/community template catalog doesn't
 cover — e.g. re-running a scoped Matugen pass to feed a still-running,
 non-Noctalia Quickshell app that reads its own `colors.json`. See
-`~/projects/hyprlnd/.config/hypr/scripts/noctalia-theme-quickshell.sh` and
+`~/projects/noctalia-dotfiles/.config/hypr/scripts/noctalia-theme-quickshell.sh` and
 its matching `~/.config/matugen/config-quickshell.toml` (a trimmed Matugen
 config with only the templates that Quickshell app still reads) for the
 worked example.
@@ -158,11 +158,11 @@ through the day" effect), write your own:
    regardless of which shell profile is active if it's also feeding
    non-Noctalia apps.
 4. Gate it behind a simple on/off toggle file so it's a one-line disable,
-   e.g. `~/.config/ml4w/settings/<name>-theme` containing `on`/`off`.
+   e.g. `~/.config/hypr/settings/<name>-theme` containing `on`/`off`.
 5. Enable `papirus-icons` (see above) so folder icons track the palette too
    — it's automatic per-palette once enabled, no per-stage work needed.
 
-Full worked example: `~/projects/hyprlnd/.config/hypr/scripts/hellsing-scheduler.sh`
+Full worked example: `~/projects/noctalia-dotfiles/.config/hypr/scripts/hellsing-scheduler.sh`
 (a 4-stage Hellsing-inspired palette keyed to time of day) plus its generator
 script pattern — write one Python/shell script that derives *both* the
 Noctalia palette JSON and any other app's color file from one shared
@@ -190,7 +190,7 @@ gotcha, testing, docs) is written up step by step in
 `~/projects/noctalia-dotfiles/CREATING-A-THEME.md` -- follow that directly
 when asked to build one; the summary below is just the toggle-script shape.
 Skip the poller entirely and write a one-shot apply/revert script sourcing
-`~/projects/hyprlnd/.config/hypr/scripts/custom-theme-lib.sh`:
+`~/projects/noctalia-dotfiles/.config/hypr/scripts/custom-theme-lib.sh`:
 
 ```bash
 #!/usr/bin/env bash
@@ -220,7 +220,7 @@ fi
 the wallpaper swap, and the fastfetch logo swap. Generate the three color
 files the same way as a scheduled theme's stages (matugen scaffold + hand
 overrides for primary/secondary/tertiary/background) — see
-`~/projects/hyprlnd/.claude/skills/noctalia-theme/` example generator
+`~/projects/noctalia-dotfiles/.claude/skills/noctalia-theme/` example generator
 scripts referenced above; for several themes at once, one Python script with
 a `{theme_id: {overrides...}}` dict beats N near-duplicate scripts.
 

@@ -1,15 +1,21 @@
 # noctalia-dotfiles
 
-Personal Noctalia v5 shell config, split out from [`hyprlnd`](../hyprlnd) (the
-ml4w-based Hyprland dotfiles) because it isn't part of that repo's ml4w
-symlink farm at all -- Noctalia's own config directories were never touched by
-ml4w's install.sh, so they get their own repo and their own installer instead
-of being force-fit into that one.
+The one actively maintained repo for this desktop: Noctalia's own config,
+Hyprland's config, and the custom Quickshell apps/theme system built on top
+of it. It started out holding only what was purely Noctalia's (split out
+from [`hyprlnd`](../hyprlnd), the ml4w-based Hyprland dotfiles, because
+Noctalia's directories were never touched by ml4w's installer to begin
+with) -- `.config/hypr`, the live Quickshell apps, and `.config/ml4w/colors`
+later moved here too, once keeping them git-tracked in `hyprlnd` meant a
+manual copy for every edit (its live files were symlinked into a plain,
+non-git directory, not into that repo). `hyprlnd` is now frozen, kept only
+as a historical snapshot of the dormant ml4w/Waybar profile; see
+[Relationship to hyprlnd](#relationship-to-hyprlnd).
 
 Noctalia is now the sole daily-driver shell on this machine. The old `ml4w`
 profile (Waybar/swaync/rofi/hypridle) is kept installed but dormant -- a
 one-command fallback (`switch-shell-profile.sh ml4w`) rather than something
-actively maintained; see [Relationship to hyprlnd](#relationship-to-hyprlnd).
+actively maintained.
 
 ## What's here
 
@@ -21,11 +27,29 @@ actively maintained; see [Relationship to hyprlnd](#relationship-to-hyprlnd).
     joker.json                the static Joker theme
 .local/share/noctalia/plugins/ai-usage/
   plugin.toml, service.luau, bar.luau
+.config/hypr/
+  conf/, scripts/, sounds/, settings/    Hyprland config + the custom-theme
+                                          system -- see Custom themes/Theme
+                                          picker below and Relationship to
+                                          hyprlnd for the full script list
+.config/quickshell/
+  shell.qml, CustomTheme/, PowerApp/, AIUsageApp/, ThemePickerApp/,
+  overview/, shared/                      the live Quickshell apps
+.config/ml4w/colors/
+  <id>.json per static theme              generated palette data (the one
+                                           part of ml4w's own directory tree
+                                           that's entirely ours)
+.config/fastfetch/
+  config.jsonc, config-zerotrust.jsonc,   sed-rewritten in place on every
+  assets/<id>-face.png                    theme apply to swap the ASCII logo
 ```
 
-The whole `.config/noctalia` directory is one symlink into this repo (see
-[Install](#install)) -- drop a new palette straight into `palettes/` and it's
-already live, no separate copy step.
+`.config/noctalia`, `.config/hypr`, and `.config/quickshell` are each one
+symlink straight into this repo (see [Install](#install)) -- drop a new
+palette into `palettes/`, or edit a hypr script or QML app, and it's already
+live, no separate copy step. `.config/ml4w/colors` is a symlink nested one
+level inside the still-ml4w-owned `~/.config/ml4w` tree, for the same reason
+-- see [Relationship to hyprlnd](#relationship-to-hyprlnd).
 
 GUI changes made from Noctalia's own Settings save to
 `~/.local/state/noctalia/settings.toml` (not tracked here -- see the
@@ -62,8 +86,8 @@ Non-obvious widgets:
   own, same principle as the Waybar module it mirrors.
 - **`shell_profile`** -- a `custom_button` running the exact same script as
   Waybar's `custom/shell-profile` button and `$mainMod+SHIFT+N`: flips
-  between the `ml4w` and `noctalia` profiles live. Lives in `hyprlnd`, not
-  here -- see [Relationship to hyprlnd](#relationship-to-hyprlnd).
+  between the `ml4w` and `noctalia` profiles live -- see
+  [Relationship to hyprlnd](#relationship-to-hyprlnd).
 - **`cpu` / `memory`** -- Noctalia's builtin `sysmon` widget type, `stat =
   "cpu_usage"` / `"ram_used"` (not an obvious key name from the widget type
   alone).
@@ -95,8 +119,8 @@ community_ids               = ["papirus-icons"]
   active (HSV-weighted hue match against Papirus's ~24 named folder colors),
   and switches Papirus-Dark/Papirus-Light by the palette's surface luminance.
   Requires `papirus-icon-theme` installed (official `extra` repo). Full
-  mechanism and its `settings.ini` gotcha (below) documented in
-  `hyprlnd`'s `noctalia-theme` skill.
+  mechanism and its `settings.ini` gotcha (below) documented in this
+  repo's `noctalia-theme` skill.
 
 **Gotcha inherited from this machine's GTK setup**: `papirus-icons` only sets
 the icon theme via `gsettings`, but `~/.config/hypr/scripts/gtk.sh` pushes
@@ -113,14 +137,14 @@ wallpaper_changed = "~/.config/hypr/scripts/noctalia-theme-quickshell.sh $NOCTAL
 colors_changed     = "~/.config/hypr/scripts/noctalia-sync-icon-theme.sh"
 ```
 
-Both scripts live in `hyprlnd`, not here (see below), because they reach
-outside anything Noctalia owns:
+Both scripts live under `.config/hypr/scripts` rather than anywhere
+Noctalia-native, because they reach outside anything Noctalia owns:
 
 - **`wallpaper_changed`** -- Noctalia's own wallpaper picker never runs
   ml4w's full Matugen pipeline (retired along with the rest of ml4w's own
   bar/panels), so the two Quickshell panels with no Noctalia equivalent that
   are still kept around (`PowerWindow`, `AIUsageWindow` -- see
-  `hyprlnd`'s `shell.qml`) would otherwise keep showing stale colors.
+  `shell.qml`) would otherwise keep showing stale colors.
   Re-runs a scoped Matugen pass for just those, then tells Quickshell to
   reload.
 - **`colors_changed`** -- fires on *every* palette resolve, not just a real
@@ -138,7 +162,7 @@ re-resolving its own palette on startup once caused Waybar to reappear
 seconds after switching to the `noctalia` profile. First fixed with a
 profile-check no-op guard in that listener; since ml4w's own Waybar/swaync
 were fully retired, the listener itself is no longer started at all
-(`~/.config/ml4w/listeners.sh`, in `hyprlnd`), which is a stronger version of
+(`~/.config/hypr/scripts/listeners.sh`), which is a stronger version of
 the same fix. Worth remembering before wiring any *new* hook that writes
 into ml4w-shared config.
 
@@ -146,7 +170,7 @@ into ml4w-shared config.
 
 41 hand-built palettes beyond Noctalia's own built-in/wallpaper-derived
 schemes. One is scheduled (Hellsing); the other 40 are static one-shot
-toggles sharing `~/.config/hypr/scripts/custom-theme-lib.sh` (in `hyprlnd`)
+toggles sharing `~/.config/hypr/scripts/custom-theme-lib.sh`
 for apply/deactivate logic and cross-theme preemption -- a single
 `~/.cache/ml4w/active-static-theme` file tracks whichever one (if any) is
 on, so turning on any theme cleanly turns off whatever else was active,
@@ -154,7 +178,7 @@ including Hellsing (restored -- tier and all -- if it was preempted).
 
 Want to add another one? [**CREATING-A-THEME.md**](CREATING-A-THEME.md) is
 a step-by-step walkthrough of the whole process (also documented as a
-reusable pattern in `hyprlnd`'s `noctalia-theme` skill).
+reusable pattern in this repo's `noctalia-theme` skill).
 
 ### Hellsing -- scheduled, 4 tiers
 
@@ -174,22 +198,21 @@ panels (Power, AI-usage) and Hyprland's window borders (three separate
 theming surfaces, kept in sync by one generator). Palettes here:
 `palettes/hellsing-*.json`. Everything else -- the poller, the shared apply
 logic, the sounds, the Quickshell/Hyprland color files, the wallpaper pool,
-the fastfetch logo swap -- lives in `hyprlnd`:
+the fastfetch logo swap -- also lives here, under `.config/hypr`:
 
-- `~/.config/hypr/scripts/hellsing-lib.sh` -- shared tier-application logic
-- `~/.config/hypr/scripts/hellsing-scheduler.sh` -- the 5-minute poller,
+- `.config/hypr/scripts/hellsing-lib.sh` -- shared tier-application logic
+- `.config/hypr/scripts/hellsing-scheduler.sh` -- the 5-minute poller,
   autostarted unconditionally (both shell profiles)
-- `~/.config/hypr/scripts/hellsing-theme.sh` -- instant on/off (the poller
+- `.config/hypr/scripts/hellsing-theme.sh` -- instant on/off (the poller
   alone means waiting up to 5 minutes to see anything change)
-- Toggle file: `~/.config/ml4w/settings/hellsing-theme` (`on`/`off`)
+- Toggle file: `.config/hypr/settings/hellsing-theme` (`on`/`off`)
 
 ### Static themes -- one-shot, no schedule
 
 Each is a single palette, deliberately not scheduled (a time-of-day
 evolution doesn't fit any of these the way it does Hellsing). One-shot
-apply/revert script per theme in `hyprlnd`
-(`~/.config/hypr/scripts/<id>-theme.sh`), palette here at
-`palettes/<id>.json`. Each on/off toggle also fires a themed notification;
+apply/revert script per theme, also here
+(`.config/hypr/scripts/<id>-theme.sh`), palette at `palettes/<id>.json`. Each on/off toggle also fires a themed notification;
 quotes are verbatim where the source material has real ones, flavor text
 (clearly not claimed as a quote) where it doesn't.
 
@@ -249,8 +272,8 @@ per the no-fake-quotes rule below, it also gets no fake sound.
 
 ## Theme picker
 
-A QML grid (`ThemePickerApp`, `hyprlnd`, part of the `qs` shell process
-alongside `PowerApp`/`AIUsageApp`) replaced the old rofi text menu once 40
+A QML grid (`ThemePickerApp`, part of the `qs` shell process alongside
+`PowerApp`/`AIUsageApp`) replaced the old rofi text menu once 40
 static themes plus Hellsing made a plain list hard to browse -- one card per
 theme, showing its name and a real wallpaper thumbnail pulled fresh from
 `~/Pictures/wallpaper/<id>/` every time the picker opens, click to apply.
@@ -283,61 +306,87 @@ the grid with no way to tell which specific tier is actually active.
 
 The theme picker replaced the old dedicated `Super+Shift+J` (Joker) /
 `Super+Shift+V` (Hellsing) toggle keybinds -- both are still one click away
-as menu entries. All scripts behind these binds live in `hyprlnd` since they
-reach into the ml4w-managed hypr config tree; see below.
+as menu entries.
 
 ## Relationship to hyprlnd
 
-`hyprlnd` owns everything that isn't purely Noctalia's own file:
+`hyprlnd` is **frozen** (archived, no further edits) -- it's kept only as a
+historical snapshot of the dormant ml4w/Waybar profile: Waybar (all themes),
+swaync, rofi theming, matugen, `com.ml4w/*` minus `colors/`. Its own
+`install.sh` still works standalone if that legacy profile is ever wanted on
+a fresh machine, since this repo's bootstrap does not set it up.
 
-- `~/.config/hypr/scripts/switch-shell-profile.sh` + the `Super+Shift+N`
+Everything actively maintained now lives here, including the Hyprland
+config and custom-theme system that used to require a manual copy into
+`hyprlnd` for every edit:
+
+- `.config/hypr/scripts/switch-shell-profile.sh` + the `Super+Shift+N`
   keybind -- the profile switcher, now mostly a fallback path back to the
-  dormant `ml4w` profile (see below)
-- `~/.config/hypr/scripts/hellsing-*.sh` -- the Hellsing scheduler/lib/toggle
-  and the ml4w-side (Quickshell/Hyprland) halves of every custom theme
-- `~/.config/hypr/scripts/custom-theme-lib.sh` -- shared apply/deactivate
+  dormant `ml4w` profile
+- `.config/hypr/scripts/hellsing-*.sh` -- the Hellsing scheduler/lib/toggle
+  and the Quickshell/Hyprland halves of every custom theme
+- `.config/hypr/scripts/custom-theme-lib.sh` -- shared apply/deactivate
   logic and cross-theme preemption for every static theme
-- `~/.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder,undead,xalatath,sylvanas,protoss,terran,zerg,kerrigan,khorne,tzeentch,nurgle,slaanesh,acecombat,geralt,yennefer,triss,baldursgate,dante,vergil,doom,skyrim,homm3,kingarthur,godfather,dracula,quake,silenthill,residentevil,kotor,darthmaul,darthmalgus,darthvader,taintedgrail,titanfall2}-theme.sh`
+- `.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder,undead,xalatath,sylvanas,protoss,terran,zerg,kerrigan,khorne,tzeentch,nurgle,slaanesh,acecombat,geralt,yennefer,triss,baldursgate,dante,vergil,doom,skyrim,homm3,kingarthur,godfather,dracula,quake,silenthill,residentevil,kotor,darthmaul,darthmalgus,darthvader,taintedgrail,titanfall2}-theme.sh`
   -- the 40 static theme toggles
-- `~/.config/hypr/scripts/theme-list.sh` -- single source of truth for every
+- `.config/hypr/scripts/theme-list.sh` -- single source of truth for every
   picker entry (id/label/tier), read by both pickers below
-- `~/.config/hypr/scripts/theme-list-json.sh` -- emits `theme-list.sh` as
+- `.config/hypr/scripts/theme-list-json.sh` -- emits `theme-list.sh` as
   JSON for `ThemePickerApp` to consume
-- `~/.config/hypr/scripts/noctalia-theme-picker.sh` -- the old rofi theme
+- `.config/hypr/scripts/noctalia-theme-picker.sh` -- the old rofi theme
   picker, kept as an unbound fallback
-- `~/.config/quickshell/ThemePickerApp/` -- the QML grid theme picker,
+- `.config/quickshell/ThemePickerApp/` -- the QML grid theme picker,
   loaded into the main `qs` shell process via `shell.qml`
-- `~/.config/hypr/scripts/gen-theme-colors.py` -- the palette generator used
+- `.config/hypr/scripts/gen-theme-colors.py` -- the palette generator used
   in [CREATING-A-THEME.md](CREATING-A-THEME.md)
-- `~/.config/hypr/scripts/noctalia-theme-quickshell.sh` and
+- `.config/hypr/scripts/noctalia-theme-quickshell.sh` and
   `noctalia-sync-icon-theme.sh` -- this repo's two hooks
 - `~/.config/matugen/config-quickshell.toml` -- the scoped Matugen config the
-  Quickshell hook uses
+  Quickshell hook uses (still `hyprlnd`-side, part of the frozen ml4w tree,
+  read but not written by anything here)
 - `.claude/skills/noctalia-theme/SKILL.md` -- the reusable "how to build a
   Noctalia theme on this setup" writeup
 
-### ml4w decoupling (Noctalia is now the sole daily-driver shell)
+### ml4w decoupling and the hypr/quickshell migration
 
 ml4w's own bar/panels/theming were retired once the ml4w-vs-noctalia
 comparison ran its course, rather than kept as a live, actively-maintained
-parallel system. What's left of ml4w in `hyprlnd`, post-decoupling:
+parallel system. What's left of ml4w, now split across a frozen `hyprlnd`
+and this repo:
 
-- **Kept, extracted from the old ml4w mega-shell**: `~/.config/quickshell/
-  {PowerApp,AIUsageApp,CustomTheme}/` + a trimmed `shell.qml` -- the two
-  panels with no Noctalia equivalent (a power/session menu, and the
-  custom-built AI-usage dropdown Noctalia's own `hyprlnd/ai-usage:bar`
-  widget reopens via `qs ipc call ai-usage toggle`), still themed by the
-  same `colors.json`/`theme-manager` IPC reload every static theme already
-  used. The standalone Quickshell `overview/` (Alt-Tab-style workspace
-  switcher, `Ctrl+Tab`) was already independent of the old mega-shell and
-  needed no change.
-- **Kept, dormant fallback**: `switch-shell-profile.sh`, Waybar (all
-  themes), swaync, rofi, hypridle -- installed and switchable
-  (`switch-shell-profile.sh ml4w`) but not autostarted or actively
-  maintained. Its Matugen-driven re-theming (Waybar/rofi/swaync/gtk3/gtk4
-  color templates) was removed along with the rest of the ml4w Quickshell
-  layer, so the fallback's colors are frozen at whatever they were the last
-  time this pipeline ran, not live-updating with wallpaper changes.
+- **Migrated here from `hyprlnd`**: `.config/hypr` (all of it), the live
+  Quickshell apps (`shell.qml`, `CustomTheme/`, `PowerApp/`, `AIUsageApp/`,
+  `ThemePickerApp/`, `overview/`, `shared/` -- the two panels with no
+  Noctalia equivalent, a power/session menu and the custom-built AI-usage
+  dropdown Noctalia's own `hyprlnd/ai-usage:bar` widget reopens via
+  `qs ipc call ai-usage toggle`, still themed by the same
+  `colors.json`/`theme-manager` IPC reload every static theme already
+  used), `.config/ml4w/colors` (the one part of ml4w's own directory
+  that's entirely our generated data), and `.config/fastfetch` (same
+  reasoning -- its config files and `assets/` get rewritten on every
+  theme apply).
+- **Dropped in favor of a native Noctalia command**: the hypr tree used to
+  lean on several `ml4w-*` helper scripts for things Noctalia's own CLI
+  (`noctalia msg --help`) already covers -- session actions (lock/suspend/
+  logout/reboot/shutdown), the clipboard-history panel, night light, and
+  dark/light theme-mode toggling (which also re-applies the GTK color
+  template, so a separate ml4w script fighting it would have been wrong
+  anyway). The emoji-picker and calculator keybinds now open Noctalia's own
+  launcher, which has both built in.
+- **Self-built, vendored into `.config/hypr/scripts` and a new
+  `.config/hypr/settings/`**: the notification-handler wrapper, the sidepad
+  dispatcher, the two float toggles, the qs/overview autostart, and the
+  low-battery listener -- genuinely still needed, no Noctalia equivalent,
+  already ml4w-agnostic under the hood so this was a relocation and a
+  rename, not a rewrite.
+- **Kept, dormant fallback** (frozen in `hyprlnd`): `switch-shell-profile.sh`
+  still switches to it, Waybar (all themes), swaync, rofi, hypridle --
+  installed and switchable (`switch-shell-profile.sh ml4w`) but not
+  autostarted or actively maintained. Its Matugen-driven re-theming
+  (Waybar/rofi/swaync/gtk3/gtk4 color templates) was removed along with the
+  rest of the ml4w Quickshell layer, so the fallback's colors are frozen at
+  whatever they were the last time this pipeline ran, not live-updating
+  with wallpaper changes.
 - **Removed entirely**: the ml4w Quickshell Sidebar/Wallpaper-picker/
   Calendar/Welcome panels and the alternate Statusbar/Dock engine
   (redundant with Noctalia's own control-center/OSD/wallpaper-picker,
@@ -345,10 +394,9 @@ parallel system. What's left of ml4w in `hyprlnd`, post-decoupling:
   the separate ml4w Settings app; the ml4w Hyprland Settings app (its one
   load-bearing side effect -- border/gaps values -- baked directly into
   `conf/layouts/default.conf` first); the `gtk-theme-switcher.sh` listener;
-  a handful of keybinds/windowrules that pointed at the now-deleted panels.
-
-This repo only owns the files that are purely Noctalia's: `config.toml`,
-`palettes/`, and the `ai-usage` plugin.
+  `wallpaper.sh`/`wallpaper-cache.sh`/`wallpaper-effects.sh` and a duplicate
+  `toggleallfloat.sh` (all dead, no live keybind pointed at any of them); a
+  handful of keybinds/windowrules that pointed at the now-deleted panels.
 
 ## Install
 
@@ -356,5 +404,26 @@ This repo only owns the files that are purely Noctalia's: `config.toml`,
 ./install.sh
 ```
 
-Symlinks `.config/noctalia` and `.local/share/noctalia/plugins/ai-usage` into
-place, backing up anything already there to `~/.noctalia-dotfiles-backups/`.
+A real fresh-machine bootstrap, not just a symlink script: installs the
+required packages for the detected distro, then symlinks `.config/hypr`,
+`.config/quickshell`, `.config/noctalia`, `.config/ml4w/colors`, and
+`.local/share/noctalia/plugins/ai-usage` into place, backing up anything
+already there to `~/.noctalia-dotfiles-backups/`.
+
+Sets up the Noctalia-only end state (Hyprland + Noctalia + Quickshell + the
+custom-theme system) -- it does not install the dormant ml4w/Waybar profile;
+run `hyprlnd`'s own (frozen but still functional) `install.sh` for that.
+
+- **Arch-like** (CachyOS/Manjaro/EndeavourOS included): fully automated,
+  verified end-to-end on real hardware. Bootstraps `yay` if missing, then
+  installs everything through it (works whether a package is in an official
+  repo or the AUR).
+- **Fedora**: best-effort -- `dnf` for what's in official repos, plus the
+  `errornointernet/quickshell` and (pre-Fedora-44) `zhangyi6324/noctalia-shell`
+  COPRs. Built from current upstream docs, not tested on a real Fedora box;
+  report back if a package name has drifted.
+- **NixOS**: doesn't try to imperatively install anything -- drops a
+  `flake.nix.example` using Noctalia's own official flake module
+  (`docs.noctalia.dev`) and prints instructions to add it to your system
+  flake and `nixos-rebuild switch` yourself, then still symlinks the config
+  the same way (those files aren't Nix-managed either way).
