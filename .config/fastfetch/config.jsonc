@@ -1,15 +1,15 @@
-// Zero Trust dashboard style, inspired by ThreatLocker's fastfetch card.
-// Section 1 mirrors real identity/hardware facts, section 2 mirrors the
-// actual Hyprland stack running on this box, section 3 queries live
-// security posture (secure boot, LUKS, firewall, MAC, lock, polkit, etc.)
-// so the numbers only look as good as the machine actually is.
-//
-// Run with:  fastfetch -c ~/.config/fastfetch/config-zerotrust.jsonc
+// Zero Trust identity style, inspired by ThreatLocker's fastfetch card.
+// Trimmed down from the original: Platform now reads the live shell-profile
+// state file instead of hardcoding the old ml4w/Waybar stack (which printed
+// wrong info once Noctalia became the daily driver -- this line now follows
+// the profile live). Network, the Zero-Trust-posture checks, Board, Built,
+// and Processes were dropped as more than actually wanted day to day,
+// keeping Storage and the Doctrine/quote bookend.
 {
     "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
     "logo": {
         "type": "kitty",
-        "source": "/home/lufftwafedracula/.config/fastfetch/assets/atreides-face.png",
+        "source": "/home/lufftwafedracula/.config/fastfetch/assets/protoss-face.png",
         "width": 22,
         "padding": {
             "top": 1,
@@ -48,17 +48,6 @@
             "key": "{#36} {#39}◆{#0} Doctrine    Verify Locally · Trust Nothing Blindly"
         },
         {
-            "type": "command",
-            "key": "{#36} {#39}◆{#0} Built       ",
-            "keyColor": "cyan",
-            "text": "printf \"%s days ago\" \"$(( ($(date +%s) - $(stat -c %W /)) / 86400 ))\""
-        },
-        {
-            "key": "{#36} {#39}◆{#0} Board       ",
-            "type": "board",
-            "format": "{name}"
-        },
-        {
             "key": "{#36} {#39}◆{#0} CPU         ",
             "type": "cpu",
             "showPeCoreCount": true
@@ -85,7 +74,7 @@
             "type": "custom"
         },
         {
-            "key": "{#34}──────────── {#39}Platform Modules{#34} ────────────",
+            "key": "{#34}──────────── {#39}Platform{#34} ────────────",
             "type": "custom"
         },
         {
@@ -93,16 +82,9 @@
             "key": "{#34} {#39}▪{#0} Compositor  Hyprland"
         },
         {
-            "type": "custom",
-            "key": "{#34} {#39}▪{#0} Bar         Waybar"
-        },
-        {
-            "type": "custom",
-            "key": "{#34} {#39}▪{#0} Notify      SwayNC"
-        },
-        {
-            "type": "custom",
-            "key": "{#34} {#39}▪{#0} Launcher    Rofi"
+            "type": "command",
+            "key": "{#34} {#39}▪{#0} Desktop     ",
+            "text": "p=$(cat ~/.config/hypr/settings/shell-profile 2>/dev/null); if [ \"$p\" = noctalia ]; then printf 'Noctalia'; else printf 'ml4w (Waybar + SwayNC + Rofi)'; fi"
         },
         {
             "type": "custom",
@@ -110,7 +92,7 @@
         },
         {
             "type": "custom",
-            "key": "{#34} {#39}▪{#0} Idle & Lock Hypridle + Hyprlock"
+            "key": "{#34} {#39}▪{#0} Lock        Hyprlock"
         },
         {
             "key": "{#34} {#39}▪{#0} Shell       ",
@@ -143,28 +125,7 @@
             "type": "memory"
         },
         {
-            "key": "{#32} {#39}▸{#0} Processes   ",
-            "type": "processes"
-        },
-        {
             "key": "{#32}────────────────────────────────────",
-            "type": "custom"
-        },
-        {
-            "key": "{#36}──────────── {#39}Network{#36} ────────────",
-            "type": "custom"
-        },
-        {
-            "key": "{#36} {#39}‣{#0} Local IP    ",
-            "type": "localip",
-            "format": "{ipv4} ({ifName})"
-        },
-        {
-            "key": "{#36} {#39}‣{#0} DNS         ",
-            "type": "dns"
-        },
-        {
-            "key": "{#36}────────────────────────────────────",
             "type": "custom"
         },
         {
@@ -201,68 +162,6 @@
         },
         {
             "key": "{#33}────────────────────────────────────",
-            "type": "custom"
-        },
-        {
-            "key": "{#35}──────────── {#39}Zero Trust Posture{#35} ────────────",
-            "type": "custom"
-        },
-        {
-            "type": "command",
-            "key": "{#35} {#39}●{#0} Secure Boot     ",
-            "keyColor": "magenta",
-            "text": "s=$(mokutil --sb-state 2>/dev/null); if echo \"$s\" | grep -qi enabled; then printf '\\e[32mENABLED\\e[0m'; else printf '\\e[31mDISABLED\\e[0m'; fi"
-        },
-        {
-            "type": "command",
-            "key": "{#35} {#39}●{#0} Disk Encrypt    ",
-            "keyColor": "magenta",
-            "text": "if lsblk -o FSTYPE 2>/dev/null | grep -qi crypto_luks; then printf '\\e[32mLUKS ACTIVE\\e[0m'; else printf '\\e[31mNONE\\e[0m'; fi"
-        },
-        {
-            "type": "command",
-            "key": "{#35} {#39}●{#0} Firewall        ",
-            "keyColor": "magenta",
-            "text": "if systemctl is-active --quiet nftables 2>/dev/null || systemctl is-active --quiet ufw 2>/dev/null || systemctl is-active --quiet firewalld 2>/dev/null; then printf '\\e[32mENFORCED\\e[0m'; else printf '\\e[31mINACTIVE\\e[0m'; fi"
-        },
-        {
-            "type": "command",
-            "key": "{#35} {#39}●{#0} Mandatory Access",
-            "keyColor": "magenta",
-            "text": "if systemctl is-active --quiet apparmor 2>/dev/null; then printf '\\e[32mAPPARMOR\\e[0m'; elif [ \"$(getenforce 2>/dev/null)\" = \"Enforcing\" ]; then printf '\\e[32mSELINUX\\e[0m'; else printf '\\e[31mNONE\\e[0m'; fi"
-        },
-        {
-            "type": "command",
-            "key": "{#35} {#39}●{#0} Screen Lock     ",
-            "keyColor": "magenta",
-            "text": "if pgrep -x hypridle >/dev/null; then printf '\\e[32mENFORCED\\e[0m'; else printf '\\e[31mDISABLED\\e[0m'; fi"
-        },
-        {
-            "type": "command",
-            "key": "{#35} {#39}●{#0} Elevation       ",
-            "keyColor": "magenta",
-            "text": "if systemctl is-active --quiet polkit 2>/dev/null; then printf '\\e[32mPOLKIT ACTIVE\\e[0m'; else printf '\\e[31mUNMANAGED\\e[0m'; fi"
-        },
-        {
-            "type": "command",
-            "key": "{#35} {#39}●{#0} Pkg Signing     ",
-            "keyColor": "magenta",
-            "text": "lvl=$(grep -E '^SigLevel' /etc/pacman.conf 2>/dev/null | grep -o 'Required'); if [ \"$lvl\" = \"Required\" ]; then printf '\\e[32mREQUIRED\\e[0m'; else printf '\\e[33mOPTIONAL\\e[0m'; fi"
-        },
-        {
-            "type": "command",
-            "key": "{#35} {#39}●{#0} TPM             ",
-            "keyColor": "magenta",
-            "text": "if [ -e /dev/tpm0 ]; then printf '\\e[32mPRESENT\\e[0m'; else printf '\\e[31mABSENT\\e[0m'; fi"
-        },
-        {
-            "type": "command",
-            "key": "{#35} {#39}●{#0} SSH Server      ",
-            "keyColor": "magenta",
-            "text": "if systemctl is-active --quiet sshd 2>/dev/null; then printf '\\e[33mACTIVE · EXPOSED\\e[0m'; else printf '\\e[32mNOT RUNNING\\e[0m'; fi"
-        },
-        {
-            "key": "{#35}────────────────────────────────────",
             "type": "custom"
         },
         {
