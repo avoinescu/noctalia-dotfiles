@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Static "Darth Nihilus" theme (Star Wars: KOTOR II) -- void black, sickly
-# gold/amber mask-glow, deep void-purple shroud, ash grey. One-shot apply/
+# gold/amber mask-glow, near-black maroon shroud, ash grey. One-shot apply/
 # revert, not a poller. Shared apply/deactivate logic (including
 # cross-theme preemption) lives in custom-theme-lib.sh, used by every
 # static custom theme.

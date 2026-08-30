@@ -2,8 +2,8 @@
   "dark": {
     "mPrimary": "#C9A227",
     "mOnPrimary": "#1A1400",
-    "mSecondary": "#3B2A4A",
-    "mOnSecondary": "#E8DFF0",
+    "mSecondary": "#2A1418",
+    "mOnSecondary": "#E8D8D8",
     "mTertiary": "#6E6A5C",
     "mOnTertiary": "#0D0D0A",
     "mError": "#8B1A1A",
@@ -26,8 +26,8 @@
       "normal": {
         "black": "#030304",
         "red": "#6E6A5C",
-        "green": "#3B2A4A",
-        "yellow": "#896e2c",
+        "green": "#2A1418",
+        "yellow": "#7f610e",
         "blue": "#4A4E69",
         "magenta": "#C9A227",
         "cyan": "#5C8374",
@@ -36,8 +36,8 @@
       "bright": {
         "black": "#4a3c12",
         "red": "#928f85",
-        "green": "#6c5f77",
-        "yellow": "#9d94a4",
+        "green": "#5f4f52",
+        "yellow": "#948a8c",
         "blue": "#777a8e",
         "magenta": "#d6b95d",
         "cyan": "#85a297",
