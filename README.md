@@ -168,8 +168,8 @@ into ml4w-shared config.
 
 ## Custom themes
 
-41 hand-built palettes beyond Noctalia's own built-in/wallpaper-derived
-schemes. One is scheduled (Hellsing); the other 40 are static one-shot
+54 hand-built palettes beyond Noctalia's own built-in/wallpaper-derived
+schemes. One is scheduled (Hellsing); the other 53 are static one-shot
 toggles sharing `~/.config/hypr/scripts/custom-theme-lib.sh`
 for apply/deactivate logic and cross-theme preemption -- a single
 `~/.cache/ml4w/active-static-theme` file tracks whichever one (if any) is
@@ -269,6 +269,19 @@ per the no-fake-quotes rule below, it also gets no fake sound.
 | `darthvader` | Imperial black, lightsaber blood-red, life-support gray, on near-black | "No. I am your father." -- the real, exact line (not the commonly-misquoted "Luke, I am your father") | flavor text | The real film/in-game delivery of that exact line |
 | `taintedgrail` | Rot-green, aged bronze/leather, blood-red accent, on bleak near-black | "The King is dead. Long live the rot." -- real line | "Silence is the only honest thing left in Avalon." -- real line | "What secrets and mysteries will you find, in the land of everlasting autumn" -- real narrator line, official 0.6 launch trailer |
 | `titanfall2` | Vanguard thruster blue, Titan-armor gold, plasma-orange, on gunmetal near-black | BT-7274's real "Protocol 3: Protect the Pilot." line | flavor text | Random: 3 real in-game lines |
+| `revan` | Steel-grey mask, dark-past crimson, redemption-saber electric-blue, on cold near-black | flavor text (his KOTOR/SWTOR ending is player-choice-driven, so no single canonical line fits an on-notification) | Revan's real dark-side line to Malak at the Star Forge: "This is the way of the Dark Side, Malak -- all things end in death." | None -- nothing clean findable, not faked |
+| `darthnihilus` | Void black, sickly mask-gold, void-purple shroud, ash grey | Visas Marr's real line describing him: "He is a wound in the Force, more presence than flesh, and in his wake life dies... sacrificing itself to his hunger." | Kreia's real line: "The will behind his power is a primal thing. And it devours him as he devours others." | A real growled in-game line, volume-boosted to this collection's baseline |
+| `meetrasurik` | Jedi lightsaber blue, weathered robe tan, Force-wound pale grey-white, on near-black | flavor text (she's a heavily player-scripted, often-silent protagonist -- no verifiable fixed line) | flavor text | None -- no findable dialogue to source from |
+| `sauron` | Fiery Eye-of-Sauron orange, Mordor black-red, molten ring-gold, on ashen near-black | The real Ring-verse: "One Ring to rule them all, One Ring to find them, One Ring to bring them all and in the darkness bind them." | flavor text | The real Ring-verse recitation |
+| `fellowship` | Shire/Lothlorien forest green, Rivendell gold, elvish silver-blue, on deep-forest near-black | The Council of Elrond's real line: "You have my sword. And you have my bow. And my axe." | Frodo's real line, same scene: "I will take the Ring, though I do not know the way." | Gimli's real "And my axe!" clip |
+| `corban` | Tempered steel, forge/hearth orange, Elyon's holy white-gold, on cold-iron near-black | Real book text (*Malice*, book 1): "Both the brave man and the coward feel the same. The only difference between them is that the brave man faces his fear, does not run." | flavor text | None -- unadapted book series, no findable clip |
+| `snaka` | Venomous serpent green/black, toxic yellow-green highlight | flavor text (no verifiable Snaka quote exists in any searchable source) | flavor text | None -- unadapted book series |
+| `ulfrir` | Icy wolf grey-blue, wintery, snow-white highlight | Real book text (*The Shadow of the Gods*): `"It is Ulfrir," Elvar breathed, stumbling away, looking again at the mound.` | flavor text | None -- unadapted book series |
+| `likrifa` | Dragon-fire orange-red, dark scale-red, ember gold | flavor text (no verifiable Lik-Rifa quote found -- checked her wiki and the book's full quote page) | flavor text | None -- unadapted book series |
+| `vaas` | Jungle green, blood-red madness, tribal tattoo orange, on near-black | Vaas's real "definition of insanity" monologue (Far Cry 3) | Same monologue, verified via a full transcript | The complete real ~34s monologue clip |
+| `agentsmith` | Classic Matrix code-green, black suit, lighter code-green highlight | "Human beings are a disease, a cancer of this planet. You're a plague, and we are the cure." -- real film line | "Never send a human to do a machine's job." -- real film line | Random: 3 real film clips (the disease monologue, "Mr. Anderson", "I'm gonna enjoy watching you die") |
+| `murderbot` | Gunmetal-grey SecUnit armor, dark chassis, media-feed screen-blue, warning orange | The real, verbatim opening line of *All Systems Red*: "I could have become a mass murderer after I hacked my governor module, but then I realized I could access the combined feed of entertainment channels..." | Real book line: "Also, you may have noticed, I don't care." | None -- no findable clip for this narration-heavy book-first property |
+| `atreides` | Arrakis spice/sand amber, deep desert-night blue, Ibad-eyes cyan, on near-black | The real Litany Against Fear: "I must not fear. Fear is the mind-killer. Fear is the little-death that brings total obliteration." | flavor text | Paul reciting the Litany, trimmed from a Dune (2021) scene clip via its captions |
 
 ## Theme picker
 
@@ -291,7 +304,7 @@ they can't drift out of sync. That list has, in order: Hellsing (an "Auto,
 current tier" entry plus all four tiers individually as forced previews --
 a forced tier auto-corrects back within 5 minutes if it doesn't match the
 scheduler's current-hour tier, since Hellsing's poller doesn't know the
-difference between a preview and a real change), then all 40 static themes
+difference between a preview and a real change), then all 53 static themes
 from the table above. Known limitation: since all 5 Hellsing entries apply
 via the same `ACTIVE_STATIC` marker, their cards all highlight together in
 the grid with no way to tell which specific tier is actually active.
@@ -327,8 +340,8 @@ config and custom-theme system that used to require a manual copy into
   and the Quickshell/Hyprland halves of every custom theme
 - `.config/hypr/scripts/custom-theme-lib.sh` -- shared apply/deactivate
   logic and cross-theme preemption for every static theme
-- `.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder,undead,xalatath,sylvanas,protoss,terran,zerg,kerrigan,khorne,tzeentch,nurgle,slaanesh,acecombat,geralt,yennefer,triss,baldursgate,dante,vergil,doom,skyrim,homm3,kingarthur,godfather,dracula,quake,silenthill,residentevil,kotor,darthmaul,darthmalgus,darthvader,taintedgrail,titanfall2}-theme.sh`
-  -- the 40 static theme toggles
+- `.config/hypr/scripts/{joker,illidan,arthas,bloodelves,proxima,warframe,warthunder,undead,xalatath,sylvanas,protoss,terran,zerg,kerrigan,khorne,tzeentch,nurgle,slaanesh,acecombat,geralt,yennefer,triss,baldursgate,dante,vergil,doom,skyrim,homm3,kingarthur,godfather,dracula,quake,silenthill,residentevil,kotor,darthmaul,darthmalgus,darthvader,taintedgrail,titanfall2,revan,darthnihilus,meetrasurik,sauron,fellowship,corban,snaka,ulfrir,likrifa,vaas,agentsmith,murderbot,atreides}-theme.sh`
+  -- the 53 static theme toggles
 - `.config/hypr/scripts/theme-list.sh` -- single source of truth for every
   picker entry (id/label/tier), read by both pickers below
 - `.config/hypr/scripts/theme-list-json.sh` -- emits `theme-list.sh` as

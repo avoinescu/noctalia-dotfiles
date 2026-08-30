@@ -281,6 +281,6 @@ If the theme should evolve over time the way Hellsing does (multiple tiers
 keyed to time of day) rather than being a single on/off palette, the shape
 is different enough that it's not a variant of the steps above -- see
 `hellsing-lib.sh` (shared tier-application logic) and
-`hellsing-scheduler.sh` (the poller) in `hyprlnd` as the worked example, and
-the "Building an 'evolving' / scheduled theme" section of
-`hyprlnd`'s `.claude/skills/noctalia-theme/SKILL.md` for the checklist.
+`hellsing-scheduler.sh` (the poller) as the worked example, and the
+"Building an 'evolving' / scheduled theme" section of this repo's
+`.claude/skills/noctalia-theme/SKILL.md` for the checklist.
