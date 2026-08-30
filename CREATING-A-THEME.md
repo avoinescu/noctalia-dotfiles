@@ -184,6 +184,29 @@ faking one or substituting an unrelated clip just to have *something* --
 same principle as the no-fake-quotes rule above. Proxima (Mortal Shell II)
 has none for exactly this reason.
 
+**Spoken dialogue with no clean pre-isolated clip anywhere (myinstants has
+nothing, only full cutscenes/compilations exist)?** Don't guess a
+timestamp by trimming blind and hoping the wording matches -- pull that
+video's captions as text instead of relying on your own ear:
+
+```sh
+yt-dlp --skip-download --write-auto-sub --write-sub --sub-lang en \
+  --sub-format vtt -o <id>.%(ext)s <video-url>
+```
+
+`--write-sub` grabs official manually-authored captions if the video has
+them (higher confidence -- sometimes even speaker-labeled, e.g. SWTOR's
+"Deceived" trailer); `--write-auto-sub` falls back to YouTube's
+auto-generated ones otherwise (still text you can read and grep, not
+something guessed by ear). Grep the `.vtt` for a distinctive phrase, read
+the surrounding per-word timestamps to find a clean sentence boundary, then
+pull audio and trim exactly like the soundtrack case above (`-ss`/`-t`
+before `-i`, verify non-silent with `volumedetect`). This is how
+Xal'atath's, Yennefer's, Triss's, Tzeentch's, Slaanesh's, Darth Malgus's,
+King Arthur: Legion IX's, and Tainted Grail's sounds were sourced -- all
+were previously skipped as "no sound" for exactly the ear-verification
+problem this solves.
+
 Downloading a short clip of a game's actual soundtrack (not a spoken line)
 works the same way but needs a different source than myinstants.com --
 search YouTube for the official/OST upload, pull audio with `yt-dlp -x
