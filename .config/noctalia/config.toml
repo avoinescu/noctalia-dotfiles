@@ -98,3 +98,9 @@ stat = "ram_used"
 
 [widget.clock]
 format = "%H:%M  %a %d %b"
+
+# Toasts appeared on BOTH monitors at once (default monitors = [] means
+# "all"), which read as every notification firing twice. Show each one only
+# on the monitor you're focused on instead.
+[notification]
+follow_focused_output = true
