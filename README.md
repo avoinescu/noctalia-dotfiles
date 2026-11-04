@@ -126,6 +126,8 @@ refresh_rate = "DP-1:165; DP-2:144"
 default = "Hyprland"
 ```
 
+The look (clock at top center, no logo, no scheme picker, straight to your password, power buttons bottom right) is set by the `GREETER_SETTINGS` list at the top of `setup-greeter.sh`. Edit it and run `./setup-greeter.sh --appearance` (just updates `greeter.toml`, setting by setting, via `greeter-config.py`), then log out to see it -- don't restart greetd from inside your session, that ends it. The greeter has no avatar, welcome text or weather widgets.
+
 It lists every session in `/usr/share/wayland-sessions` -- Hyprland,
 Hyprland (uwsm-managed), and Plasma (Wayland) as the fallback desktop.
 Turn on Noctalia Settings -> Security -> Noctalia Greeter -> **Auto-Sync

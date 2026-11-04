@@ -15,12 +15,19 @@
 # ROLLBACK (e.g. greeter shows a black screen): Ctrl+Alt+F2, log in, then
 #   sudo systemctl disable greetd && sudo systemctl enable sddm && sudo reboot
 #
-# Usage: ./setup-greeter.sh          (prompts for sudo as needed)
-#        ./setup-greeter.sh --dry-run  (print what would change)
+# Usage: ./setup-greeter.sh               full setup (prompts for sudo)
+#        ./setup-greeter.sh --dry-run     print what would change
+#        ./setup-greeter.sh --appearance  only re-apply the greeter.toml
+#                                         settings below (look/layout), then
+#                                         log out to see them
 set -euo pipefail
 
 DRY=0
-[ "${1:-}" = "--dry-run" ] && DRY=1
+APPEARANCE_ONLY=0
+case "${1:-}" in
+    --dry-run)    DRY=1 ;;
+    --appearance) APPEARANCE_ONLY=1 ;;
+esac
 
 # --- Layout: keep in sync with .config/hypr/modules/monitors.lua -----------
 LOGIN_OUTPUT="DP-1"                          # 32" -- shows the login form
@@ -29,9 +36,32 @@ REFRESH="DP-1:165; DP-2:144"
 DEFAULT_SESSION="Hyprland"                   # Name= from /usr/share/wayland-sessions
 # ---------------------------------------------------------------------------
 
+# greeter.toml settings, one 'table|key|toml-value' each. These win over
+# what Noctalia's Auto-Sync writes to sync.toml (wallpaper/palette/font still
+# come from the sync). Options: noctalia-greeter docs/user/configuration.md.
+# The greeter has no avatar / welcome text / weather widgets.
+GREETER_SETTINGS=(
+    "output|name|\"$LOGIN_OUTPUT\""
+    "output|layout|\"$LAYOUT\""
+    "output|refresh_rate|\"$REFRESH\""
+    "session|default|\"$DEFAULT_SESSION\""
+    "user|default|\"$USER\""                     # skip user pick, straight to password
+    "appearance|scheme|\"Synced\""                # colors from Noctalia
+    "appearance|hide_logo|true"                    # no owl
+    "appearance|scheme_selector_position|\"hidden\""
+    "appearance|power_buttons_position|\"bottom-right\""
+    "clock|enabled|true"
+    "clock|position|\"top-center\""
+    "clock|time_format|\"{:%H:%M}\""
+    "clock|date_format|\"%A, %B %d\""
+    "clock|time_font_size|96"
+    "clock|date_font_size|20"
+)
+
 GREETD_CONF=/etc/greetd/config.toml
 GREETER_TOML=/var/lib/noctalia-greeter/greeter.toml
 STAMP="$(date +%Y%m%d-%H%M%S)"
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 run() {
     echo "+ $*"
@@ -39,6 +69,25 @@ run() {
 }
 
 [ -f /etc/arch-release ] || { echo "error: Arch/CachyOS only (pacman)." >&2; exit 1; }
+
+apply_greeter_settings() {
+    echo ":: 4/6 Greeter look, layout and default session ($GREETER_TOML)"
+    if [ "$DRY" -eq 1 ]; then
+        printf '   | %s\n' "${GREETER_SETTINGS[@]}"
+        return
+    fi
+    sudo cp "$GREETER_TOML" "$GREETER_TOML.bak-$STAMP" 2>/dev/null || true
+    sudo python3 -I "$REPO_DIR/greeter-config.py" "$GREETER_TOML" "${GREETER_SETTINGS[@]}"
+}
+
+if [ "$APPEARANCE_ONLY" -eq 1 ]; then
+    apply_greeter_settings
+    echo
+    echo "Done. Log out (power menu: Super+Ctrl+P) to see the new login screen --"
+    echo "no need to restart greetd (that would end your session)."
+    exit 0
+fi
+
 
 echo ":: 1/6 Installing greetd + noctalia-greeter"
 run sudo pacman -S --needed --noconfirm greetd noctalia-greeter
@@ -92,31 +141,7 @@ if [ -f "$PAM_GREETD" ] && ! grep -q pam_gnome_keyring "$PAM_GREETD"; then
         "$PAM_GREETD"
 fi
 
-echo ":: 4/6 Monitor layout + default session ($GREETER_TOML)"
-block="$(cat <<EOF
-
-# --- managed by noctalia-dotfiles/setup-greeter.sh ---
-# Mirrors .config/hypr/modules/monitors.lua. These win over values synced
-# from Noctalia (sync.toml), so the layout can't drift.
-[output]
-name = "$LOGIN_OUTPUT"
-layout = "$LAYOUT"
-refresh_rate = "$REFRESH"
-
-[session]
-default = "$DEFAULT_SESSION"
-EOF
-)"
-if [ "$DRY" -eq 1 ]; then
-    printf '%s\n' "$block" | sed 's/^/   | /'
-elif sudo grep -qE '^\[(output|session)\]' "$GREETER_TOML" 2>/dev/null; then
-    echo "   NOTE: $GREETER_TOML already has an [output] or [session] table;"
-    echo "   not touching it. Make sure it contains:"
-    printf '%s\n' "$block" | sed 's/^/   | /'
-else
-    sudo cp "$GREETER_TOML" "$GREETER_TOML.bak-$STAMP" 2>/dev/null || true
-    printf '%s\n' "$block" | sudo tee -a "$GREETER_TOML" >/dev/null
-fi
+apply_greeter_settings
 
 echo ":: 5/6 Checking the greeter can see the sessions"
 if [ "$DRY" -eq 0 ]; then
