@@ -78,6 +78,20 @@ run sudo noctalia-greeter-apply-appearance --setup-system
 # switch without an admin password prompt each time.
 run sudo noctalia-greeter passwordless-sync enable "$USER"
 
+# greetd's PAM file (unlike SDDM's) has no pam_gnome_keyring, so the login
+# keyring stays locked and anything using the Secret Service (browsers, the
+# Steam widget's API key, ...) pops "Default keyring is locked" after every
+# boot. Same lines SDDM uses; the leading '-' skips them if the module is
+# missing. /etc/pam.d/greetd is a pacman backup file, so updates keep this.
+PAM_GREETD=/etc/pam.d/greetd
+if [ -f "$PAM_GREETD" ] && ! grep -q pam_gnome_keyring "$PAM_GREETD"; then
+    echo "   adding pam_gnome_keyring to $PAM_GREETD (keyring unlocks at login)"
+    run sudo sed -i.bak-"$STAMP" \
+        -e '/^auth[[:space:]]\+include[[:space:]]\+system-local-login/a -auth       optional     pam_gnome_keyring.so' \
+        -e '/^session[[:space:]]\+include[[:space:]]\+system-local-login/a -session    optional     pam_gnome_keyring.so auto_start' \
+        "$PAM_GREETD"
+fi
+
 echo ":: 4/6 Monitor layout + default session ($GREETER_TOML)"
 block="$(cat <<EOF
 
