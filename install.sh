@@ -36,6 +36,7 @@ TARGETS=(
     ".config/btop"
     ".config/bashrc"
     ".config/xsettingsd"
+    ".config/ohmyposh"
     ".local/share/noctalia/plugins/ai-usage"
     ".local/share/noctalia/plugins/steam-library"
     ".bashrc"
@@ -55,11 +56,16 @@ ARCH_PACKAGES=(
     rofi grim grimblast-git slurp imagemagick jq ffmpeg wl-clipboard libnotify
     matugen xdg-desktop-portal-hyprland power-profiles-daemon kitty fastfetch qt6ct
     otf-font-awesome noto-fonts-cjk ttf-firacode-nerd ttf-jetbrains-mono-nerd ttf-fira-sans
-    awww polkit-gnome networkmanager bluez bluez-utils
+    polkit-gnome networkmanager bluez bluez-utils
     eza fzf tty-clock btop
     papirus-icon-theme bibata-cursor-git
     python-pillow
     libsecret gnome-keyring
+    # No awww/swww: Noctalia draws its own wallpaper layer. A second
+    # wallpaper daemon maps a background layer ABOVE Noctalia's and hides
+    # every wallpaper/theme change.
+    # hyprland must be >= 0.57: .config/hypr is a Lua config (hyprland.lua
+    # + modules/); 0.57 dropped hyprlang (hyprland.conf) entirely.
     # libsecret (secret-tool)/gnome-keyring: encrypted-at-rest credential
     # storage for the steam-library widget's Steam Web API key -- the same
     # Secret Service store GNOME apps/browsers use for saved passwords.
@@ -239,6 +245,31 @@ if [ -f "$SETTINGS_SNAPSHOT" ]; then
         echo "   (location.address was blanked before committing -- set it again in Settings for the weather widget)"
     else
         echo "   Skipped -- Noctalia will use its own defaults."
+    fi
+fi
+
+# Hyprland >= 0.57 only reads hyprland.lua; older versions only read
+# hyprland.conf, which this repo no longer drives.
+if command -v Hyprland >/dev/null 2>&1; then
+    hypr_ver="$(Hyprland --version 2>/dev/null | sed -n 's/^Hyprland \([0-9.]*\).*/\1/p' | head -1)"
+    if [ -n "$hypr_ver" ] && [ "$(printf '%s\n0.57.0\n' "$hypr_ver" | sort -V | head -1)" != "0.57.0" ]; then
+        echo
+        echo "WARNING: Hyprland $hypr_ver is older than 0.57 -- this config is Lua-only"
+        echo "         (.config/hypr/hyprland.lua). Update Hyprland before logging in."
+    fi
+    echo
+    echo ":: Checking the Hyprland config"
+    Hyprland --verify-config -c "$HOME/.config/hypr/hyprland.lua" 2>&1 | sed -n '/Config parsing result/,$p'
+fi
+
+# Login screen: optional, needs root, Arch only. See setup-greeter.sh.
+if [ "$distro" = "arch" ] && ! systemctl is-enabled greetd >/dev/null 2>&1; then
+    echo
+    read -r -p ":: Replace the login screen with noctalia-greeter (keeps SDDM as fallback)? [y/N] " do_greeter
+    if [[ "$do_greeter" =~ ^[Yy]$ ]]; then
+        "$REPO_DIR/setup-greeter.sh"
+    else
+        echo "   Skipped -- run ./setup-greeter.sh later if you want it."
     fi
 fi
 

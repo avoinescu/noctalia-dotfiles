@@ -12,10 +12,11 @@ non-git directory, not into that repo). `hyprlnd` is now frozen, kept only
 as a historical snapshot of the dormant ml4w/Waybar profile; see
 [Relationship to hyprlnd](#relationship-to-hyprlnd).
 
-Noctalia is now the sole daily-driver shell on this machine. The old `ml4w`
-profile (Waybar/swaync/rofi/hypridle) is kept installed but dormant -- a
-one-command fallback (`switch-shell-profile.sh ml4w`) rather than something
-actively maintained.
+Noctalia is now the sole shell on this machine. The old `ml4w` profile
+(Waybar/swaync/hypridle) has been retired; `switch-shell-profile.sh` no
+longer switches profiles, it just makes sure Noctalia is running and nothing
+from the old profile is. The fallback desktop is Plasma, picked at the login
+screen.
 
 ## What's here
 
@@ -28,10 +29,16 @@ actively maintained.
 .local/share/noctalia/plugins/ai-usage/
   plugin.toml, service.luau, bar.luau
 .config/hypr/
-  conf/, scripts/, sounds/, settings/    Hyprland config + the custom-theme
-                                          system -- see Custom themes/Theme
-                                          picker below and Relationship to
-                                          hyprlnd for the full script list
+  hyprland.lua, modules/                 Hyprland config (Lua, needs 0.57+)
+                                          -- see Hyprland config below
+  colors.conf, colors/                   palette data the Lua config reads
+  scripts/, sounds/, settings/           the custom-theme system -- see
+                                          Custom themes/Theme picker below
+  conf/                                  legacy hyprlang tree, NOT loaded
+                                          by Hyprland >= 0.57 (kept for
+                                          reference only)
+setup-greeter.sh                         swaps SDDM for noctalia-greeter
+                                          -- see Login screen below
 .config/quickshell/
   shell.qml, CustomTheme/, PowerApp/, AIUsageApp/, ThemePickerApp/,
   overview/, shared/                      the live Quickshell apps
@@ -56,6 +63,92 @@ GUI changes made from Noctalia's own Settings save to
 [Noctalia docs](https://docs.noctalia.dev/noctalia/configuration/)) and win
 over `config.toml`. If a widget doesn't look right, its own gear icon
 (middle-click it) is the fastest fix rather than editing this repo.
+
+## Hyprland config
+
+Hyprland 0.57 dropped its old config language (hyprlang): `hyprland.conf`
+and everything under `conf/` is ignored, and Hyprland only reads
+`~/.config/hypr/hyprland.lua`. If that file is missing it silently writes a
+stock default config, which is what "my whole setup looks reset" means.
+
+`hyprland.lua` just `require()`s the modules in `.config/hypr/modules/`:
+
+| Module | What it holds |
+|---|---|
+| `monitors.lua` | `DP-1` 32" 2560x1440@165 at 0,0 and `DP-2` 34" 3440x1440@144 to its right |
+| `environment.lua` | env vars, XWayland scaling |
+| `input.lua` | keyboard/mouse/touchpad |
+| `look.lua` | gaps, borders, blur, shadows, animations, misc |
+| `autostart.lua` | programs started once per login (`hl.on("hyprland.start")`) |
+| `keybindings.lua` | every keybind, with a description (feeds `keybindings.sh`) |
+| `windowrules.lua` | floating/size rules for dialogs and tools |
+| `gamemode.lua` | `activate_gamemode()` for `gamemode.sh`; re-applied on reload while `~/.cache/hypr/gamemode-enabled` exists |
+| `colors.lua` | parses `colors.conf` into a table |
+
+`colors.conf` is still the palette's source of truth: every theme script
+copies a palette into it and runs `hyprctl reload`, and `colors.lua` re-reads
+it on each load, so themes didn't need changing.
+
+Machine-local tweaks go in an untracked `~/.config/hypr/custom.lua` (loaded
+last if it exists).
+
+API reference: `/usr/share/hypr/stubs/hl.meta.lua`. Check for errors
+without reloading: `Hyprland --verify-config -c ~/.config/hypr/hyprland.lua`
+(strict -- it rejects unknown options and bad dispatcher arguments).
+
+**Scripts calling `hyprctl`:** 0.57 also changed the IPC. `hyprctl dispatch`
+now takes Lua (`hyprctl dispatch 'hl.dsp.exec_cmd("noctalia")'`, not
+`hyprctl dispatch exec noctalia`), and `hyprctl keyword` is gone -- use
+`hyprctl eval 'hl.config({ animations = { enabled = false } })'`. Old-style
+calls fail with an error instead of doing anything.
+
+**No wallpaper daemon:** Noctalia draws its own wallpaper layer. Don't start
+`awww`/`swww`/`hyprpaper` -- they map a second background layer *above*
+Noctalia's and hide every wallpaper and theme change.
+
+## Login screen
+
+`setup-greeter.sh` replaces SDDM with
+[noctalia-greeter](https://github.com/noctalia-dev/noctalia-greeter) (greetd
++ its own wlroots compositor). SDDM's greeter runs on X11, where the NVIDIA
+driver names the ports differently from Hyprland, so the 34" showed up on
+the wrong side at login. noctalia-greeter uses the same connector names as
+Hyprland and gets an explicit layout in
+`/var/lib/noctalia-greeter/greeter.toml`:
+
+```toml
+[output]
+name = "DP-1"                         # login form on the 32"
+layout = "DP-1:0,0; DP-2:2560,0"
+refresh_rate = "DP-1:165; DP-2:144"
+
+[session]
+default = "Hyprland"
+```
+
+It lists every session in `/usr/share/wayland-sessions` -- Hyprland,
+Hyprland (uwsm-managed), and Plasma (Wayland) as the fallback desktop.
+Turn on Noctalia Settings -> Security -> Noctalia Greeter -> **Auto-Sync
+Greeter** so the login screen follows the current wallpaper and palette.
+
+The script only enables/disables units; the switch happens at next boot and
+SDDM stays installed. **If the login screen doesn't come up:** Ctrl+Alt+F2,
+log in, then
+`sudo systemctl disable greetd && sudo systemctl enable sddm && sudo reboot`.
+If you change monitors, update both `modules/monitors.lua` and the layout
+at the top of `setup-greeter.sh` (then re-run it, or edit `greeter.toml`).
+
+## Recovery
+
+- **Desktop looks stock / config errors:** `hyprctl configerrors`, or
+  `Hyprland --verify-config -c ~/.config/hypr/hyprland.lua`. A missing
+  `hyprland.lua` gets replaced by Hyprland's autogenerated default -- restore
+  it with `git checkout .config/hypr/hyprland.lua`.
+- **Fresh machine / broken links:** `./install.sh` (idempotent; already
+  correct links are left alone, anything else is backed up first).
+- **Login screen broken:** see [Login screen](#login-screen).
+- **Hyprland itself won't start:** pick "Plasma (Wayland)" at the login
+  screen, fix the config from there, log back into Hyprland.
 
 ## Bar layout
 
@@ -313,9 +406,9 @@ the grid with no way to tell which specific tier is actually active.
 
 | Keybind | Action |
 |---|---|
-| `Super+Shift+N` | Switch shell profile (`ml4w` ⇄ `noctalia`) |
-| `Super+Shift+P` | Open the custom-theme picker (QML grid, noctalia profile only) |
-| `Super+Shift+C` | Toggle Noctalia's control center panel (noctalia profile only) |
+| `Super+Shift+P` | Open the custom-theme picker (QML grid) |
+| `Super+Shift+C` | Toggle Noctalia's control center panel |
+| `Super+Ctrl+K` | Show all keybinds (from their descriptions in `modules/keybindings.lua`) |
 
 The theme picker replaced the old dedicated `Super+Shift+J` (Joker) /
 `Super+Shift+V` (Hellsing) toggle keybinds -- both are still one click away
@@ -423,7 +516,8 @@ config into place -- `.config/hypr`, `.config/quickshell`, `.config/noctalia`,
 `.config/fastfetch`, `.config/ml4w` (just `colors/` now), `.config/kitty`,
 `.config/gtk-3.0`/`gtk-4.0`, `.config/matugen`, `.config/rofi`,
 `.config/sidepad`, `.config/qt6ct`, `.config/btop`, `.config/bashrc`,
-`.config/xsettingsd`, `.local/share/noctalia/plugins/ai-usage`, and the
+`.config/xsettingsd`, `.config/ohmyposh`,
+`.local/share/noctalia/plugins/ai-usage`/`steam-library`, and the
 top-level `.bashrc`/`.zshrc`/`.gtkrc-2.0`/`.Xresources` -- backing up
 anything already there to `~/.noctalia-dotfiles-backups/`.
 
@@ -441,6 +535,10 @@ it's a point-in-time copy offered interactively, not auto-symlinked. Saying
 no just means Noctalia boots with its own defaults, which is easy to redo
 via Settings; the monitor-layout part of a restore only makes full sense on
 the same monitor setup (same connector names) it was captured on.
+
+Finally it warns if Hyprland is older than 0.57 (this config is Lua-only),
+runs `Hyprland --verify-config` on the linked config, and on Arch offers to
+run `setup-greeter.sh` (see [Login screen](#login-screen)).
 
 - **Arch-like** (CachyOS/Manjaro/EndeavourOS included): fully automated,
   verified end-to-end on real hardware. Bootstraps `yay` if missing, then
