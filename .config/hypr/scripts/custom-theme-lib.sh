@@ -41,6 +41,26 @@ set_fastfetch_logo() {
 # each call (for themes with more than one fitting clip); a single file
 # just plays that file. Backgrounded so the theme script doesn't block on
 # playback.
+#
+# Only one theme sound plays at a time: the previous one (e.g. a 20s music
+# snippet) is stopped first, see stop_theme_sound.
+THEME_SOUND_PID="${XDG_RUNTIME_DIR:-/tmp}/theme-sound.pid"
+
+# Stops the currently playing theme sound, if any. Called at the very start
+# of every theme switch (not just when the next sound starts) so the old clip
+# cuts out the moment you pick a theme -- including themes with no sound of
+# their own. Only kills the PID if it's still actually our paplay, so a stale
+# pidfile whose PID got recycled can never hit an unrelated process.
+stop_theme_sound() {
+    [ -f "$THEME_SOUND_PID" ] || return 0
+    local pid
+    pid="$(cat "$THEME_SOUND_PID" 2>/dev/null)"
+    if [ -n "$pid" ] && [ "$(cat "/proc/$pid/comm" 2>/dev/null)" = "paplay" ]; then
+        kill "$pid" 2>/dev/null
+    fi
+    rm -f "$THEME_SOUND_PID"
+}
+
 play_theme_sound() {
     local sound="$1" pick=""
     if [ -d "$sound" ]; then
@@ -49,7 +69,9 @@ play_theme_sound() {
         pick="$sound"
     fi
     [ -n "$pick" ] || return 0
+    stop_theme_sound
     paplay "$pick" >/dev/null 2>&1 &
+    echo $! > "$THEME_SOUND_PID"
     disown
 }
 
@@ -111,6 +133,7 @@ _restore_hellsing() {
 apply_static_theme() {
     local id="$1" wallpaper_dir="$2" colors_json="$3" colors_conf="$4" logo="$5"
 
+    stop_theme_sound
     _deactivate_others "$id"
 
     # Written BEFORE wallpaper-set (not just at the end) so
@@ -143,6 +166,7 @@ apply_static_theme() {
 # active one -- safe to call unconditionally.
 deactivate_static_theme() {
     local id="$1"
+    stop_theme_sound
     if [ -f "$ACTIVE_STATIC" ] && [ "$(cat "$ACTIVE_STATIC")" = "$id" ]; then
         rm -f "$ACTIVE_STATIC"
     fi

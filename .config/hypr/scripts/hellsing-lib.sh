@@ -62,6 +62,8 @@ hellsing_announce() {
 hellsing_apply_tier() {
     local tier="$1"
 
+    stop_theme_sound   # from custom-theme-lib.sh; Seal has no sound of its own
+
     local wp
     wp=$(find "$HELLSING_WALLPAPER_DIR" -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \) 2>/dev/null | shuf -n1)
     if [ -n "$wp" ]; then
