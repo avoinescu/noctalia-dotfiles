@@ -19,8 +19,10 @@ if [ -f $HOME/.cache/hypr/gamemode-enabled ]; then
     rm $ml4w_cache_folder/restart-wpauto
     $HOME/.config/hypr/scripts/wallpaper-automation.sh &
   fi
-  hyprctl reload
+  # Remove the flag *before* reloading: modules/gamemode.lua re-applies
+  # game mode on every load while the flag exists.
   rm $HOME/.cache/hypr/gamemode-enabled
+  hyprctl reload
   notify_user --a "${APP_NAME}" \
             --i "${NOTIFICATION_ICON}" \
             --s "Gamemode deactivated" \

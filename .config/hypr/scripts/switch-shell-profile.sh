@@ -27,7 +27,7 @@ kill_and_confirm swaync
 kill_and_confirm hypridle
 
 if ! pgrep -x noctalia >/dev/null; then
-    hyprctl dispatch exec noctalia
+    hyprctl dispatch 'hl.dsp.exec_cmd("noctalia")'
     while ! pgrep -x noctalia >/dev/null; do
         sleep 0.1
     done
