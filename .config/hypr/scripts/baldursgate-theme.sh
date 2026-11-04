@@ -11,9 +11,12 @@
 #
 # The on-notification also plays a random clip from sounds/baldursgate/ --
 # real Astarion lines: "A little treat", his "darling" line (both from
-# myinstants.com), and "I was right there!" (trimmed from a YouTube clip
-# of that exact scene, using its auto-generated captions to confirm wording
-# and timing, boosted a bit in volume since the source recording ran quiet).
+# myinstants.com), and "I was right there!" (from a different YouTube
+# source than before, kept as the full downloaded clip rather than trimmed
+# -- the in-game menu-click sound runs right up against the start of the
+# line with no gap, so cutting the click out risked clipping the line
+# itself; boosted in volume to match the other clips since the source
+# recording ran quiet).
 #
 # Usage: baldursgate-theme.sh [on|off]   (no arg = toggle based on current state)
 set -uo pipefail

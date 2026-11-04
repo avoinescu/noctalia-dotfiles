@@ -24,7 +24,7 @@
 enable_builtin_templates   = true
 builtin_ids                = ["kitty", "gtk3", "gtk4"]
 enable_community_templates = true
-community_ids               = ["papirus-icons"]
+community_ids               = ["papirus-icons", "discord", "vscode", "brave", "rofi", "neovim", "zen-browser"]
 
 # Noctalia's own wallpaper picker never runs ml4w's wallpaper.sh/Matugen
 # pipeline, so the still-running ml4w Quickshell panels (Sidebar, Power,
@@ -48,6 +48,8 @@ center   = ["workspaces"]
 end      = [
     "updates",
     "ai_usage",
+    "steam_library",
+    "book_alerts",
     "cpu",
     "memory",
     "volume",
@@ -58,7 +60,6 @@ end      = [
     "caffeine",
     "nightlight",
     "tray",
-    "shell_profile",
     "control-center",
     "session",
     "clock",
@@ -75,15 +76,17 @@ type = "yuuto/arch-updater:widget"
 [widget.ai_usage]
 type = "hyprlnd/ai-usage:bar"
 
-# Same script/keybind as Waybar's "custom/shell-profile" button and
-# $mainMod+SHIFT+N -- flips between the ml4w and noctalia profiles.
-[widget.shell_profile]
-type    = "custom_button"
-glyph   = "arrows-right-left"
-tooltip = "Switch shell profile (ml4w / noctalia)"
+# Our own plugin (~/.local/share/noctalia/plugins/steam-library/) -- owned
+# Steam games + ProtonDB compatibility tiers. Needs a one-time credentials
+# setup at ~/.config/steam-library/credentials (untracked, see that file).
+[widget.steam_library]
+type = "hyprlnd/steam-library:bar"
 
-  [widget.shell_profile.actions]
-  left = "exec ~/.config/hypr/scripts/switch-shell-profile.sh"
+# Our own plugin (~/.local/share/noctalia/plugins/book-alerts/) -- reads
+# ~/.cache/book-alerts/shared-snapshot.json, populated by the n8n workflow
+# (Alex – Bookshop New Listings) via Proton Drive + book-alerts-download.timer.
+[widget.book_alerts]
+type = "hyprlnd/book-alerts:bar"
 
 [widget.cpu]
 type = "sysmon"
@@ -92,3 +95,6 @@ stat = "cpu_usage"
 [widget.memory]
 type = "sysmon"
 stat = "ram_used"
+
+[widget.clock]
+format = "%H:%M  %a %d %b"

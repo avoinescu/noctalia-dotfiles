@@ -9,10 +9,11 @@
 declare -A LISTENERS
 # gtk-theme-switcher retired: it cascaded settings.ini changes into
 # matugen/Waybar/swaync, all now-retired ml4w-only surfaces once Noctalia
-# became the sole daily-driver shell.
-LISTENERS["low-bat-notification"]="$HOME/.config/ml4w/listeners/low-bat-notification.sh"
+# became the sole daily-driver shell. low-bat-notification (ml4w vendor
+# script) retired too: this desktop board has no battery, so it always
+# exited immediately without ever looping -- dead weight, not a real feature.
 # Example for another listener:
-# LISTENERS["another-listener"]="$HOME/.config/ml4w/listeners/another-listener.sh"
+# LISTENERS["another-listener"]="$HOME/.config/hypr/scripts/another-listener.sh"
 
 # Function to start a specific listener script
 start_listener() {

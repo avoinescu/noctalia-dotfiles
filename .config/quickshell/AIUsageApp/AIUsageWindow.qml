@@ -8,10 +8,9 @@ import QtQuick.Controls
 import qs.CustomTheme
 
 // AI usage dropdown: session/weekly rate-limit %, tokens by day, tokens by
-// model — one tab per provider script under
-// ~/.config/waybar/scripts/ai-usage/providers/. Adding a new AI tool means
-// dropping a script there; this panel just renders whatever collect.sh
-// reports, it has no per-tool logic of its own.
+// model — one tab per provider script under ./scripts/providers/. Adding a
+// new AI tool means dropping a script there; this panel just renders
+// whatever collect.sh reports, it has no per-tool logic of its own.
 PanelWindow {
     id: root
 
@@ -33,6 +32,13 @@ PanelWindow {
     }
 
     property bool isOpen: false
+    property bool autoClosePaused: false
+    // Mirrors isOpen but gets pulsed false->true on resumeAutoClose() to force
+    // HyprlandFocusGrab to re-request the compositor grab -- Hyprland silently
+    // drops it to whichever surface stole focus while paused, and toggling
+    // "active" is the only way to get it re-armed since it never itself
+    // transitions while isOpen just sits true.
+    property bool grabActive: false
     visible: isOpen || slideAnim.running
     property real currentTopMargin: isOpen ? 40 : -700
 
@@ -44,10 +50,16 @@ PanelWindow {
         }
     }
 
+    Timer {
+        id: reArmGrabTimer
+        interval: 0
+        onTriggered: if (root.isOpen) root.grabActive = true
+    }
+
     HyprlandFocusGrab {
         windows: [root]
-        active: root.isOpen
-        onCleared: if (root.isOpen) root.isOpen = false
+        active: root.grabActive
+        onCleared: if (root.isOpen && !root.autoClosePaused) root.isOpen = false
     }
 
     Shortcut {
@@ -61,6 +73,14 @@ PanelWindow {
         function open(): void { root.isOpen = true }
         function close(): void { root.isOpen = false }
         function isOpen(): bool { return root.isOpen }
+        function pauseAutoClose(): void { root.autoClosePaused = true }
+        function resumeAutoClose(): void {
+            root.autoClosePaused = false
+            if (root.isOpen) {
+                root.grabActive = false
+                reArmGrabTimer.restart()
+            }
+        }
     }
 
     property var providersData: []
@@ -89,13 +109,16 @@ PanelWindow {
 
     function loadData(force) {
         collectProc.command = force
-            ? ["bash", "-c", Quickshell.env("HOME") + "/.config/waybar/scripts/ai-usage/collect.sh --force"]
-            : ["bash", "-c", Quickshell.env("HOME") + "/.config/waybar/scripts/ai-usage/collect.sh"]
+            ? ["bash", "-c", Quickshell.env("HOME") + "/.config/quickshell/AIUsageApp/scripts/collect.sh --force"]
+            : ["bash", "-c", Quickshell.env("HOME") + "/.config/quickshell/AIUsageApp/scripts/collect.sh"]
         collectProc.running = false
         collectProc.running = true
     }
 
-    onIsOpenChanged: if (isOpen) loadData(false)
+    onIsOpenChanged: {
+        grabActive = isOpen
+        if (isOpen) loadData(false)
+    }
 
     Process {
         id: collectProc

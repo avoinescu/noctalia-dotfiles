@@ -30,10 +30,18 @@ PanelWindow {
     }
 
     property bool isOpen: false
+    property bool autoClosePaused: false
+    // Mirrors isOpen but gets pulsed false->true on resumeAutoClose() to force
+    // HyprlandFocusGrab to re-request the compositor grab -- Hyprland silently
+    // drops it to whichever surface stole focus while paused, and toggling
+    // "active" is the only way to get it re-armed since it never itself
+    // transitions while isOpen just sits true.
+    property bool grabActive: false
     visible: isOpen
     property var allThemes: []
 
     onIsOpenChanged: {
+        grabActive = isOpen
         if (isOpen) {
             searchInput.text = ""
             themeListProcess.running = true
@@ -41,11 +49,17 @@ PanelWindow {
         }
     }
 
+    Timer {
+        id: reArmGrabTimer
+        interval: 0
+        onTriggered: if (root.isOpen) root.grabActive = true
+    }
+
     HyprlandFocusGrab {
         windows: [root]
-        active: root.isOpen
+        active: root.grabActive
         onCleared: {
-            if (root.isOpen)
+            if (root.isOpen && !root.autoClosePaused)
                 root.isOpen = false
         }
     }
@@ -63,6 +77,14 @@ PanelWindow {
         function toggle(): void { root.isOpen = !root.isOpen }
         function open(): void { root.isOpen = true }
         function close(): void { root.isOpen = false }
+        function pauseAutoClose(): void { root.autoClosePaused = true }
+        function resumeAutoClose(): void {
+            root.autoClosePaused = false
+            if (root.isOpen) {
+                root.grabActive = false
+                reArmGrabTimer.restart()
+            }
+        }
     }
 
     // ==========================================

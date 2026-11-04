@@ -418,14 +418,29 @@ and this repo:
 ```
 
 A real fresh-machine bootstrap, not just a symlink script: installs the
-required packages for the detected distro, then symlinks `.config/hypr`,
-`.config/quickshell`, `.config/noctalia`, `.config/ml4w/colors`, and
-`.local/share/noctalia/plugins/ai-usage` into place, backing up anything
-already there to `~/.noctalia-dotfiles-backups/`.
+required packages for the detected distro, then symlinks every tracked
+config into place -- `.config/hypr`, `.config/quickshell`, `.config/noctalia`,
+`.config/fastfetch`, `.config/ml4w` (just `colors/` now), `.config/kitty`,
+`.config/gtk-3.0`/`gtk-4.0`, `.config/matugen`, `.config/rofi`,
+`.config/sidepad`, `.config/qt6ct`, `.config/btop`, `.config/bashrc`,
+`.config/xsettingsd`, `.local/share/noctalia/plugins/ai-usage`, and the
+top-level `.bashrc`/`.zshrc`/`.gtkrc-2.0`/`.Xresources` -- backing up
+anything already there to `~/.noctalia-dotfiles-backups/`.
 
 Sets up the Noctalia-only end state (Hyprland + Noctalia + Quickshell + the
-custom-theme system) -- it does not install the dormant ml4w/Waybar profile;
-run `hyprlnd`'s own (frozen but still functional) `install.sh` for that.
+custom-theme system). ml4w/Waybar has been fully retired and uninstalled,
+not just left dormant; `hyprlnd` is a frozen historical snapshot of that old
+setup, kept for reference only, with its own separate `install.sh` if that's
+ever wanted.
+
+It then offers to restore a saved Noctalia *settings* snapshot (active
+theme/palette, enabled plugins and app-color templates, monitor-specific
+layout) from `.local/state/noctalia/settings.toml` -- this is separate from
+the tracked config above since Noctalia rewrites that file constantly, so
+it's a point-in-time copy offered interactively, not auto-symlinked. Saying
+no just means Noctalia boots with its own defaults, which is easy to redo
+via Settings; the monitor-layout part of a restore only makes full sense on
+the same monitor setup (same connector names) it was captured on.
 
 - **Arch-like** (CachyOS/Manjaro/EndeavourOS included): fully automated,
   verified end-to-end on real hardware. Bootstraps `yay` if missing, then

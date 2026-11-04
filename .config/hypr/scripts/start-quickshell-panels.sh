@@ -20,8 +20,10 @@ info() { echo -e "${GREEN}[INFO]${NC} $1" >&2; }
 warn() { echo -e "${YELLOW}[WARN]${NC} $1" >&2; }
 error() { echo -e "${RED}[ERROR]${NC} $1" >&2; }
 
-# Start nmapplet
-nm-applet --indicator &
+# nm-applet was dropped: Noctalia's bar already has a native network widget
+# (shows the active interface, e.g. "enp6s0") backed by a full Wi-Fi panel
+# with SSID list + password prompts (confirmed via its own translation
+# strings), so the separate tray icon was pure duplication.
 
 # Quickshell reads its icon theme from QS_ICON_THEME, not from GTK. Hyprland
 # normally exports it (conf/environment.lua); fall back to reading the GTK

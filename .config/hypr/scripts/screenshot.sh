@@ -44,6 +44,18 @@ source "$HOME/.config/hypr/scripts/notify-handler.sh"
 APP_NAME="Screen Capture"
 NOTIFICATION_ICON="camera-photo-symbolic"
 
+# rofi's own menu and slurp's region overlay both grab compositor focus,
+# which trips the quickshell panels' click-outside-to-close (HyprlandFocusGrab)
+# and silently closes the theme picker / AI usage widget before the shot is
+# taken. Tell them to ignore that specific focus loss for the duration of
+# this script, and always undo it on exit (including a cancelled rofi/slurp).
+qs ipc call theme-picker pauseAutoClose 2>/dev/null
+qs ipc call ai-usage pauseAutoClose 2>/dev/null
+qs ipc call steam-library pauseAutoClose 2>/dev/null
+qs ipc call steam-library-big pauseAutoClose 2>/dev/null
+qs ipc call steam-library-wishlist pauseAutoClose 2>/dev/null
+trap 'qs ipc call theme-picker resumeAutoClose 2>/dev/null; qs ipc call ai-usage resumeAutoClose 2>/dev/null; qs ipc call steam-library resumeAutoClose 2>/dev/null; qs ipc call steam-library-big resumeAutoClose 2>/dev/null; qs ipc call steam-library-wishlist resumeAutoClose 2>/dev/null' EXIT
+
 # Screenshot Editor
 export GRIMBLAST_EDITOR="$(cat ~/.config/hypr/settings/screenshot-editor)"
 

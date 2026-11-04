@@ -5,7 +5,7 @@
 -- this plugin at all -- waybar-format.sh/collect.sh own the OAuth/token
 -- accounting, same as they do for Waybar.
 
-local SCRIPT = noctalia.getenv("HOME") .. "/.config/waybar/scripts/ai-usage/waybar-format.sh"
+local SCRIPT = noctalia.getenv("HOME") .. "/.config/quickshell/AIUsageApp/scripts/waybar-format.sh"
 
 local function intervalMs()
     local minutes = tonumber(noctalia.getConfig("refresh_minutes")) or 5

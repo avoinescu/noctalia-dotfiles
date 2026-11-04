@@ -9,10 +9,12 @@
 # everywhere, and runs last regardless of which branch installed packages.
 #
 # Sets up the Noctalia-only end state: Hyprland + Noctalia + Quickshell +
-# our own custom-theme system. Does NOT set up the dormant ml4w/Waybar
-# profile (Waybar, swaync, rofi theming, matugen, com.ml4w/*) -- that
-# profile is frozen in ~/projects/hyprlnd, which has its own install.sh
-# if that legacy setup is ever wanted on a fresh machine too.
+# our own custom-theme system. ml4w/Waybar (the profile this setup used to
+# dual-boot between) has been fully retired and uninstalled -- rofi, kitty,
+# matugen, gtk, etc. are now this repo's own tracked configs, not vestiges
+# of that profile. ~/projects/hyprlnd is a frozen historical snapshot of
+# the old ml4w-based setup, kept for reference only, not meant to be
+# reinstalled from -- it has its own install.sh if that's ever wanted.
 set -uo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -23,8 +25,23 @@ TARGETS=(
     ".config/quickshell"
     ".config/noctalia"
     ".config/fastfetch"
-    ".config/ml4w/colors"
+    ".config/ml4w"
+    ".config/kitty"
+    ".config/gtk-3.0"
+    ".config/gtk-4.0"
+    ".config/matugen"
+    ".config/rofi"
+    ".config/sidepad"
+    ".config/qt6ct"
+    ".config/btop"
+    ".config/bashrc"
+    ".config/xsettingsd"
     ".local/share/noctalia/plugins/ai-usage"
+    ".local/share/noctalia/plugins/steam-library"
+    ".bashrc"
+    ".zshrc"
+    ".gtkrc-2.0"
+    ".Xresources"
 )
 
 # Verified end-to-end on Arch/CachyOS (this machine). The Fedora and NixOS
@@ -38,6 +55,22 @@ ARCH_PACKAGES=(
     rofi grim grimblast-git slurp imagemagick jq ffmpeg wl-clipboard libnotify
     matugen xdg-desktop-portal-hyprland power-profiles-daemon kitty fastfetch qt6ct
     otf-font-awesome noto-fonts-cjk ttf-firacode-nerd ttf-jetbrains-mono-nerd ttf-fira-sans
+    awww polkit-gnome networkmanager bluez bluez-utils
+    eza fzf tty-clock btop
+    papirus-icon-theme bibata-cursor-git
+    python-pillow
+    libsecret gnome-keyring
+    # libsecret (secret-tool)/gnome-keyring: encrypted-at-rest credential
+    # storage for the steam-library widget's Steam Web API key -- the same
+    # Secret Service store GNOME apps/browsers use for saved passwords.
+    # bibata-cursor-git: confirm this AUR package actually provides the exact
+    # "Bibata-Modern-Ice" variant conf/autostart.conf's `hyprctl setcursor`
+    # line names -- this machine's copy predates this install.sh and was
+    # never actually installed via pacman/AUR, so the real source is
+    # unconfirmed. Same caveat for ttf-fira-sans above.
+    # python-pillow: only needed if you enable Noctalia's community "brave"
+    # theme template (~/.local/state/noctalia/community-templates/brave) --
+    # its apply.sh imports PIL to paint the theme's background PNGs.
 )
 
 # dnf names to confirm at implementation/first-run time -- based on current
@@ -73,6 +106,15 @@ install_packages_arch() {
     fi
     echo ":: Installing packages via yay (works whether they're in an official repo or the AUR)"
     yay -S --needed --noconfirm "${ARCH_PACKAGES[@]}"
+
+    # oh-my-posh isn't packaged for Arch/AUR under a stable name -- this
+    # machine's copy lives in ~/.local/bin, placed by oh-my-posh's own
+    # official installer (https://ohmyposh.dev/docs/installation/linux),
+    # not pacman/yay. Skip if already present so re-runs are idempotent.
+    if ! command -v oh-my-posh >/dev/null 2>&1; then
+        echo ":: Installing oh-my-posh via its official installer"
+        curl -s https://ohmyposh.dev/install.sh | bash -s -- -d "$HOME/.local/bin"
+    fi
 }
 
 install_packages_fedora() {
@@ -171,6 +213,34 @@ echo ":: Linking dotfiles"
 for path in "${TARGETS[@]}"; do
     link "$REPO_DIR/$path" "$HOME/$path"
 done
+
+SETTINGS_SNAPSHOT="$REPO_DIR/.local/state/noctalia/settings.toml"
+if [ -f "$SETTINGS_SNAPSHOT" ]; then
+    echo
+    echo ":: A saved Noctalia settings snapshot is available -- active"
+    echo "   theme/palette, enabled plugins and app-color templates, and"
+    echo "   monitor-specific layout (lockscreen widget positions,"
+    echo "   wallpaper-per-monitor). Without it Noctalia just boots with its"
+    echo "   own defaults, which is fine too -- easy to redo via Settings."
+    echo "   The monitor-layout part only makes full sense if this is the"
+    echo "   same machine/monitor setup (same connector names) it was"
+    echo "   captured on."
+    read -r -p "   Restore it now? [y/N] " restore_settings
+    if [[ "$restore_settings" =~ ^[Yy]$ ]]; then
+        dest="$HOME/.local/state/noctalia/settings.toml"
+        if [ -e "$dest" ]; then
+            mkdir -p "$BACKUP_DIR/.local/state/noctalia"
+            mv "$dest" "$BACKUP_DIR/.local/state/noctalia/settings.toml"
+            echo "   backup   $dest -> $BACKUP_DIR/.local/state/noctalia/settings.toml"
+        fi
+        mkdir -p "$(dirname "$dest")"
+        cp "$SETTINGS_SNAPSHOT" "$dest"
+        echo "   restored $dest"
+        echo "   (location.address was blanked before committing -- set it again in Settings for the weather widget)"
+    else
+        echo "   Skipped -- Noctalia will use its own defaults."
+    fi
+fi
 
 if [ -d "$BACKUP_DIR" ]; then
     echo
