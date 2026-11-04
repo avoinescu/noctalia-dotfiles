@@ -1,0 +1,20 @@
+# Scoped matugen config for the "noctalia" shell profile: only the templates
+# still-running Quickshell processes actually read (the main shell.qml's
+# Theme singleton and the overview app). Deliberately excludes
+# kitty/gtk/waybar/rofi/swaync -- Noctalia now owns kitty/gtk3/gtk4 theming
+# itself (see ~/.config/noctalia/config.toml [theme.templates]), and the
+# rest aren't running in this profile.
+#
+# Invoked by Noctalia's [hooks] wallpaper_changed in
+# ~/.config/noctalia/config.toml, so AIUsageWindow/Sidebar/Power/etc. keep
+# tracking the live wallpaper instead of showing stale colors.
+
+[config]
+
+[templates.colorsjson]
+input_path = '~/.config/matugen/templates/colors.json'
+output_path = '~/.config/ml4w/colors/colors.json'
+
+[templates.quickshell_overview]
+input_path  = "~/.config/matugen/templates/quickshell-overview.qml"
+output_path = "~/.config/quickshell/overview/common/Appearance.colors.qml"

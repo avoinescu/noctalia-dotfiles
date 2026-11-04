@@ -1,0 +1,32 @@
+# Personal, self-owned Steam-library bar widget for Noctalia. Same principle
+# as ai-usage: no third-party CLI, credentials never leave this machine. The
+# poller runs this repo's own bar-format.sh (backed by collect.sh and
+# refresh-protondb.sh under ~/.config/quickshell/SteamLibraryApp/scripts/),
+# and a click reopens the Quickshell SteamLibraryWindow panel over `qs ipc`.
+
+id = "hyprlnd/steam-library"
+name = "Steam Library"
+version = "1.0.0"
+plugin_api = 9
+author = "hyprlnd"
+license = "MIT"
+icon = "device-gamepad-2"
+description = "Owned Steam games with ProtonDB compatibility tiers, backed by this dotfiles repo's own scripts."
+tags = ["bar", "gaming"]
+
+[[setting]]
+key = "refresh_minutes"
+type = "int"
+label_key = "settings.refresh_minutes.label"
+description_key = "settings.refresh_minutes.description"
+default = 30
+min = 5
+max = 180
+
+[[service]]
+id = "poller"
+entry = "service.luau"
+
+[[widget]]
+id = "bar"
+entry = "bar.luau"

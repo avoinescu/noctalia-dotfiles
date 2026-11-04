@@ -1,0 +1,113 @@
+# Point-in-time snapshot of ~/.local/state/noctalia/settings.toml, offered
+# as an opt-in restore during install.sh (NOT symlinked into place --
+# Noctalia rewrites this file constantly, and a live symlink here would
+# turn every settings tweak into an uncommitted repo diff). Brings back
+# active theme/palette, enabled plugins and app-color templates, and
+# monitor-specific layout (lockscreen widget positions, wallpaper-per-
+# monitor assignments) -- the last part only makes sense if you're
+# restoring onto the SAME monitor setup (same connector names, e.g.
+# DP-1/DP-2) this was captured on; on different hardware it'll need
+# re-positioning via the lockscreen widgets editor regardless.
+#
+# location.address was deliberately blanked before committing (privacy) --
+# re-enter it once after restoring if you want the weather widget live.
+#
+# To refresh this snapshot after changing settings you want to keep:
+#   cp ~/.local/state/noctalia/settings.toml \
+#      ~/projects/noctalia-dotfiles/.local/state/noctalia/settings.toml
+# (re-blank location.address again if you do)
+
+config_version = 12
+
+[location]
+address = ""
+
+[lockscreen_widgets]
+enabled = false
+schema_version = 2
+widget_order = [ "lockscreen-login-box@DP-2", "lockscreen-login-box@DP-1" ]
+
+    [lockscreen_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@DP-1"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 1280.0
+    cy = 1258.0
+    output = "DP-1"
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@DP-1".settings]
+        background_color = "surface_variant"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@DP-2"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 1720.0
+    cy = 1258.0
+    output = "DP-2"
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@DP-2".settings]
+        background_color = "surface_variant"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
+[plugins]
+enabled = [ "hyprlnd/ai-usage", "yuuto/arch-updater" ]
+
+[theme]
+builtin = "Nord"
+community_palette = "Oxocarbon"
+custom_palette = "likrifa"
+mode = "dark"
+source = "custom"
+wallpaper_scheme = "m3-content"
+
+    [theme.templates]
+    builtin_ids = [ "btop", "cava", "gtk3", "gtk4", "kitty" ]
+    community_ids = [ "papirus-icons", "discord", "vscode", "brave", "rofi", "neovim", "zen-browser" ]
+
+[wallpaper]
+directory = "/home/lufftwafedracula/Pictures/wallpaper"
+
+    [wallpaper.default]
+    path = "/home/lufftwafedracula/Pictures/wallpaper/likrifa/02.jpg"
+
+    [wallpaper.last]
+    path = "/home/lufftwafedracula/Pictures/wallpaper/likrifa/02.jpg"
+
+    [wallpaper.monitors.DP-1]
+    path = "/home/lufftwafedracula/Pictures/wallpaper/likrifa/02.jpg"
+
+    [wallpaper.monitors.DP-2]
+    path = "/home/lufftwafedracula/Pictures/wallpaper/likrifa/02.jpg"
