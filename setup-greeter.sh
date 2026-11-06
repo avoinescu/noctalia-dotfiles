@@ -30,7 +30,6 @@ case "${1:-}" in
 esac
 
 # --- Layout: keep in sync with .config/hypr/modules/monitors.lua -----------
-LOGIN_OUTPUT="DP-1"                          # 32" -- shows the login form
 LAYOUT="DP-1:0,0; DP-2:2560,0"               # 34" ultrawide to the right
 REFRESH="DP-1:165; DP-2:144"
 DEFAULT_SESSION="Hyprland"                   # Name= from /usr/share/wayland-sessions
@@ -41,7 +40,7 @@ DEFAULT_SESSION="Hyprland"                   # Name= from /usr/share/wayland-ses
 # come from the sync). Options: noctalia-greeter docs/user/configuration.md.
 # The greeter has no avatar / welcome text / weather widgets.
 GREETER_SETTINGS=(
-    "output|name|\"$LOGIN_OUTPUT\""
+    "output|name|@remove"                          # set = greeter runs on that monitor only
     "output|layout|\"$LAYOUT\""
     "output|refresh_rate|\"$REFRESH\""
     "session|default|\"$DEFAULT_SESSION\""

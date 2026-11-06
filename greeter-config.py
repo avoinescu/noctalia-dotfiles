@@ -4,6 +4,7 @@
 Usage: greeter-config.py FILE 'table|key|toml-value' ...
   e.g. greeter-config.py /var/lib/noctalia-greeter/greeter.toml \
          'clock|position|"top-center"' 'appearance|hide_logo|true'
+  A value of @remove deletes the key instead (e.g. 'output|name|@remove').
 
 Line-based on purpose (no TOML writer in the stdlib): for each setting it
 replaces `key = ...` inside `[table]`, or inserts it at the end of that
@@ -20,6 +21,9 @@ import tomllib
 def upsert(lines, table, key, value):
     header = f"[{table}]"
     start = next((i for i, l in enumerate(lines) if l.strip() == header), None)
+    remove = value == "@remove"
+    if start is None and remove:
+        return "absent"
     if start is None:
         if lines and lines[-1].strip():
             lines.append("")
@@ -30,11 +34,16 @@ def upsert(lines, table, key, value):
     key_re = re.compile(rf"\s*{re.escape(key)}\s*=")
     for i in range(start + 1, end):
         if key_re.match(lines[i]):
+            if remove:
+                del lines[i]
+                return "removed"
             new = f"{key} = {value}"
             if lines[i].strip() == new:
                 return "unchanged"
             lines[i] = new
             return "updated"
+    if remove:
+        return "absent"
     # insert after the table's last non-blank line
     pos = end
     while pos - 1 > start and not lines[pos - 1].strip():
